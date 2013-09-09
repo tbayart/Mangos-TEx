@@ -11,7 +11,8 @@
     <RootNamespace>MangosTEx</RootNamespace>
     <AssemblyName>MangosTEx</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -36,6 +37,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.7.4\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySQL.Data.Entities.6.7.4.1\lib\net40\MySql.Data.Entity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -75,13 +82,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Converters\IsBiggerThanConverter.cs" />
-    <Compile Include="Grabbers\WowHeadGrabber.cs" />
-    <Compile Include="Helpers\DelegateCommand.cs" />
-    <Compile Include="Helpers\NotificationObject.cs" />
-    <Compile Include="Helpers\RandomHelper.cs" />
-    <Compile Include="Models\Person.cs" />
-    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="Grabbers\Models\Item.cs" />
+    <Compile Include="Grabbers\WowheadGrabber.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -106,13 +110,32 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
+      <Name>Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangosData\MangosData.csproj">
+      <Project>{351de1f0-fa80-4587-811a-52568f8667f3}</Project>
+      <Name>MangosData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowApi\WowApi.csproj">
+      <Project>{7aa9d6a2-52e3-421b-b5ed-b7fbae5a6a25}</Project>
+      <Name>WowApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
+      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
+      <Name>WowFramework</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

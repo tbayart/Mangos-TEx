@@ -1,106 +1,155 @@
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Input;
-using MangosTEx.Helpers;
-using MangosTEx.Models;
+using MangosTEx.Grabbers;
+using Framework.Helpers;
+using System.Globalization;
+using Framework.Commands;
+using Framework.MVVM;
+using System.Collections.Generic;
+using System.Xml;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace MangosTEx.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        #region Properties
-
-        #region MyDateTime
-
-        private DateTime _myDateTime;
-        public DateTime MyDateTime
+        private class EventArgs<T> : EventArgs
         {
-            get { return _myDateTime; }
-            set
-            {
-                if (_myDateTime != value)
-                {
-                    _myDateTime = value;
-                    RaisePropertyChanged(() => MyDateTime);
-                }
-            }
+            public T Arg { get; protected set; }
         }
 
-        #endregion
-
-        #region PersonsCollection
-
-        private ObservableCollection<Person> _personsCollection;
-        public ObservableCollection<Person> PersonsCollection
+        private class MangosDataItemEventArgs : EventArgs<List<MangosData.Models.Item>>
         {
-            get { return _personsCollection; }
-            set
-            {
-                if (_personsCollection != value)
-                {
-                    _personsCollection = value;
-                    RaisePropertyChanged(() => PersonsCollection);
-                }
-            }
+            public MangosDataItemEventArgs(List<MangosData.Models.Item> items) { Arg = items; }
         }
 
-        #endregion
+        private class LocaleItemEventArgs : EventArgs<MangosTEx.Grabbers.Models.Item>
+        {
+            public LocaleItemEventArgs(MangosTEx.Grabbers.Models.Item loc) { Arg = loc; }
+        }
 
-        #endregion
-
-        #region Commands
-
-        public ICommand RefreshDateCommand { get { return new DelegateCommand(OnRefreshDate); } }
-        public ICommand RefreshPersonsCommand { get { return new DelegateCommand(OnRefreshPersons); } }
-        public ICommand DoNothingCommand { get { return new DelegateCommand(OnDoNothing, CanExecuteDoNothing); } }
-
-        #endregion
+        private event EventHandler<MangosDataItemEventArgs> ItemsLoaded;
+        private event EventHandler<LocaleItemEventArgs> ItemLocale;
 
         #region Ctor
         public MainWindowViewModel()
         {
-            RandomizeData();
+            var proxy = new WebProxy("proxy.elior.net", 8080);
+            proxy.UseDefaultCredentials = true;
+            WebRequest.DefaultWebProxy = proxy;
+
+            this.ItemsLoaded += OnItemsLoaded;
+            this.ItemLocale += OnItemLocale;
+            Task.Factory.StartNew(LoadItems);
+
+            //Locales = WowFramework.Helpers.LocaleHelpers.GetCultures();
+            //provider.ItemsLocale(items, CultureInfo.GetCultureInfo("fr-fr"));
+
+            // wowhead, items de test
+            // http://fr.wowhead.com/item=756
+            // http://fr.wowhead.com/item=728
+            // http://fr.wowhead.com/object=191656
+
+            //var c = new WowApi.WowApiClient();
+            //WowApi.Models.Item item = c.GetItem(756);
         }
-        #endregion
 
-        #region Command Handlers
+        void LoadItems()
+        {
+            var provider = new MangosData.MangosProvider();
+            var items = provider.GetItems()
+                .Where(o => o.Id > 700 && o.Id < 1000)
+                .ToList();
+            ItemsLoaded.Invoke(this, new MangosDataItemEventArgs(items));
+        }
 
+        private void OnItemsLoaded(object sender, MangosDataItemEventArgs e)
+        {
+            Items = e.Arg;
+            Task.Factory.StartNew(() => GetLocales(e.Arg));
+        }
+
+        private void GetLocales(List<MangosData.Models.Item> items)
+        {
+            Parallel.ForEach(items, item =>
+            {
+                var grabber = new WowheadGrabber("fr");
+                MangosTEx.Grabbers.Models.Item loc = grabber.GetItem(item.Id);
+                ItemLocale.Invoke(this, new LocaleItemEventArgs(loc));
+            });
+        }
+
+        private void OnItemLocale(object sender, LocaleItemEventArgs e)
+        {
+            if (e.Arg == null)
+                return;
+
+            var item = Items.FirstOrDefault(o => o.Id == e.Arg.Id);
+            if (item != null)
+            {
+                item.LocalizedName = e.Arg.Name;
+                item.LocalizedDescription = e.Arg.Description;
+                item.Error = e.Arg.Error;
+            }
+        }
+        #endregion Ctor
+
+        #region Properties
+        private CultureInfo[] _locales;
+        public CultureInfo[] Locales
+        {
+            get { return _locales; }
+            private set
+            {
+                _locales = value;
+                RaisePropertyChanged(() => Locales);
+            }
+        }
+
+        private List<MangosData.Models.Item> _items;
+        public List<MangosData.Models.Item> Items
+        {
+            get { return _items; }
+            private set
+            {
+                _items = value;
+                RaisePropertyChanged(() => Items);
+            }
+        }
+
+        #endregion Properties
+
+        #region Commands
+        private void InitializeCommands()
+        {
+            RefreshDateCommand = new DelegateCommand(OnRefreshDate);
+            RefreshPersonsCommand = new DelegateCommand(OnRefreshPersons);
+            DoNothingCommand = new DelegateCommand(OnDoNothing, CanExecuteDoNothing);
+        }
+
+        public ICommand RefreshDateCommand { get; private set; }
         private void OnRefreshDate()
         {
-            MyDateTime = DateTime.Now;
         }
 
+        public ICommand RefreshPersonsCommand { get; private set; }
         private void OnRefreshPersons()
         {
-            RandomizeData();
         }
 
+        public ICommand DoNothingCommand { get; private set; }
         private void OnDoNothing()
         {
         }
-
         private bool CanExecuteDoNothing()
         {
             return false;
         }
-
-        #endregion
-
-        private void RandomizeData()
-        {
-            PersonsCollection = new ObservableCollection<Person>();
-
-            for (var i = 0; i < 10; i++)
-            {
-                PersonsCollection.Add(new Person(
-                    RandomHelper.RandomString(10, true),
-                    RandomHelper.RandomInt(1, 43),
-                    RandomHelper.RandomBool(),
-                    RandomHelper.RandomNumber(50, 180, 1),
-                    RandomHelper.RandomDate(new DateTime(1980, 1, 1), DateTime.Now),
-                    RandomHelper.RandomColor()
-                    ));
-            }
-        }
+        #endregion Commands
     }
 }

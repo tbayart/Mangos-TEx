@@ -8,89 +8,86 @@
         xmlns:converters="clr-namespace:MangosTEx.Converters"
         Title="Sample App"
         WindowStartupLocation="CenterScreen"
-        Height="459"
-        Width="795">
+        Width="800"
+        Height="600"
+        >
     <Window.Resources>
-        <viewModels:MainWindowViewModel x:Key="Windows1ViewModel" />
-        <converters:IsBiggerThanConverter x:Key="IsBiggerThanConverter" />
-    </Window.Resources>
-    <Grid DataContext="{StaticResource Windows1ViewModel}">
-        <StackPanel Orientation="Vertical"
-                    Margin="20"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top">
-            <Button Content="Refresh"
-                    Style="{StaticResource ButtonStyle1}"
-                    HorizontalAlignment="Left"
-                    Command="{Binding RefreshDateCommand}" />
-            <TextBlock Text="{Binding MyDateTime}" />
-            <Button Content="Randomize Grid Data"
-                    HorizontalAlignment="Left"
-                    Margin="0 20 0 0"
-                    Command="{Binding RefreshPersonsCommand}" />
-            <DataGrid ItemsSource="{Binding PersonsCollection}"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False">
+        <viewModels:MainWindowViewModel x:Key="ViewModel" />
+        <converters:IsNullConverter x:Key="IsNullConverter" />
+        <Storyboard x:Key="LoadingStoryboard">
+            <StringAnimationUsingKeyFrames Storyboard.TargetProperty="Text"
+                                           Duration="0:0:4"
+                                           RepeatBehavior="Forever">
+                <DiscreteStringKeyFrame KeyTime="0:0:0"
+                                        Value="Loading items" />
+                <DiscreteStringKeyFrame KeyTime="0:0:1"
+                                        Value="Loading items." />
+                <DiscreteStringKeyFrame KeyTime="0:0:2"
+                                        Value="Loading items.." />
+                <DiscreteStringKeyFrame KeyTime="0:0:3"
+                                        Value="Loading items..." />
+            </StringAnimationUsingKeyFrames>
+        </Storyboard>
+        <ControlTemplate x:Key="ItemsGridTemplate">
+            <DataGrid ItemsSource="{Binding Items}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  >
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="ToolTip"
+                            Value="{Binding Error}" />
+                    </Style>
+                </DataGrid.Resources>
+
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Header="Name (string)" />
-                    <DataGridTextColumn Binding="{Binding Age}"
-                                        IsReadOnly="True"
-                                        Header="Age (int)" />
-                    <DataGridTemplateColumn Header="Age &gt; 16"
-                                            IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Image Source="{StaticResource SampleSmileyIcon}"
-                                           Width="16"
-                                           Height="16">
-                                        <Image.Style>
-                                            <Style TargetType="{x:Type Image}">
-                                                <Setter Property="Visibility"
-                                                        Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Age, ConverterParameter=18, Converter={StaticResource IsBiggerThanConverter}}"
-                                                                 Value="True">
-                                                        <Setter Property="Visibility"
-                                                                Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Grid>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridCheckBoxColumn Binding="{Binding IsMarried, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                            Header="IsMarried (bool)" />
-                    <DataGridTextColumn Binding="{Binding Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Header="Height (double)" />
-                    <DataGridTextColumn Binding="{Binding BirthDate}"
-                                        IsReadOnly="True"
-                                        Header="BirthDate (DateTime)" />
-                    <DataGridTemplateColumn Header="FavoriteColor (SolidColorBrush)"
-                                            IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid Background="{Binding FavoriteColor}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Id"
+                                    Width="Auto"
+                                    Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="Name"
+                                    Width="1*"
+                                    Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Description"
+                                    Width="2*"
+                                    Binding="{Binding Description}" />
+                    <DataGridTextColumn Header="Localized Name"
+                                    Width="1*"
+                                    Binding="{Binding LocalizedName}" />
+                    <DataGridTextColumn Header="Localized Description"
+                                    Width="2*"
+                                    Binding="{Binding LocalizedDescription}" />
                 </DataGrid.Columns>
             </DataGrid>
-
-            <Button Content="can execute command?"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Margin="0 20 0 0"
-                    Command="{Binding DoNothingCommand}" />
-        </StackPanel>
-
-        <TextBlock VerticalAlignment="Top"
-                   HorizontalAlignment="Right"
-                   Margin="15"><Run Text="(made with " /><Hyperlink NavigateUri="http://visualstudiogallery.msdn.microsoft.com/970005b8-ee15-4295-9960-375e6ea1276c"
-                                                                    RequestNavigate="Hyperlink_RequestNavigate"><Run Text="WPF MVVM project template" /></Hyperlink><Run Text=")" /></TextBlock>
+        </ControlTemplate>
+        <ControlTemplate x:Key="ItemsLoadingTemplate">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource LoadingStoryboard}" />
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </ControlTemplate>
+        <Style x:Key="ItemsGridStyle"
+               TargetType="Control">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Items, Converter={StaticResource IsNullConverter}}"
+                                Value="True">
+                    <Setter Property="Template"
+                            Value="{StaticResource ItemsLoadingTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Items, Converter={StaticResource IsNullConverter}}"
+                                Value="False">
+                    <Setter Property="Template"
+                            Value="{StaticResource ItemsGridTemplate}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid DataContext="{StaticResource ViewModel}">
+        <Control Style="{StaticResource ItemsGridStyle}">
+        </Control>
     </Grid>
 </Window>

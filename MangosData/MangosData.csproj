@@ -30,7 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
+    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -43,6 +44,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,11 +53,465 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Context\achievement_criteria_requirement.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\achievement_reward.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\areatrigger_involvedrelation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\areatrigger_tavern.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\areatrigger_teleport.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\battleground_events.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\battleground_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\battlemaster_entry.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\command.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\conditions.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_addon.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_ai_scripts.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_ai_summons.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_ai_texts.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_battleground.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_equip_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_involvedrelation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_linking.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_linking_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_model_info.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_model_race.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_movement.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_movement_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_onkill_reputation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_questrelation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_template_addon.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\creature_template_spells.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_creature_death.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_creature_movement.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_event.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_gossip.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_go_template_use.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_go_use.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_quest_end.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_quest_start.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\dbscripts_on_spell.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\db_script_string.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\disenchant_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\exploration_basexp.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\fishing_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_addon.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_battleground.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_involvedrelation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_questrelation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gameobject_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event_creature.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event_creature_data.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event_gameobject.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event_mail.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_event_quest.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_graveyard_zone.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_tele.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\game_weather.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gossip_menu.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\gossip_menu_option.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\instance_encounters.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\instance_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_convert.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_enchantment_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_expire_convert.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_required_target.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\item_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_achievement_reward.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_creature.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_gameobject.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_gossip_menu_option.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_item.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_npc_text.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_page_text.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_points_of_interest.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\locales_quest.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\mail_level_reward.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\mail_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\MangosEntities.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MangosEntities.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\MangosEntities.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\MangosModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MangosModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Context\mangos_string.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\milling_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\Models\locales_item.cs" />
+    <Compile Include="Context\npc_gossip.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_spellclick_spells.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_text.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_trainer.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_trainer_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_vendor.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\npc_vendor_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\page_text.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pet_levelstats.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pet_name_generation.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pickpocketing_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\playercreateinfo.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\playercreateinfo_action.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\playercreateinfo_item.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\playercreateinfo_spell.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\player_classlevelstats.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\player_levelstats.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\player_xp_for_level.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\points_of_interest.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_creature.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_creature_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_gameobject.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_gameobject_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_pool.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\pool_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\prospecting_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\quest_poi.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\quest_poi_points.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\quest_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\reference_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\reputation_reward_rate.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\reputation_spillover_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\reserved_name.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\scripted_areatrigger.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\scripted_event_id.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\skill_discovery_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\skill_extra_item_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\skill_fishing_base_level.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\skinning_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_area.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_bonus_data.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_chain.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_elixir.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_learn_spell.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_loot_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_pet_auras.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_proc_event.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_proc_item_enchant.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_script_target.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_target_position.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\spell_threat.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\transports.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\vehicle_accessory.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Context\world_template.cs">
+      <DependentUpon>MangosEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MangosProvider.cs" />
+    <Compile Include="Models\Item.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="Context\MangosModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>MangosModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Context\MangosEntities.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MangosEntities.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Context\MangosEntities.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MangosEntities.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
+      <Name>Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
+      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
+      <Name>WowFramework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
