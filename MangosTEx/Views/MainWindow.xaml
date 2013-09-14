@@ -19,15 +19,16 @@
                                            Duration="0:0:4"
                                            RepeatBehavior="Forever">
                 <DiscreteStringKeyFrame KeyTime="0:0:0"
-                                        Value="Loading items" />
+                                        Value="" />
                 <DiscreteStringKeyFrame KeyTime="0:0:1"
-                                        Value="Loading items." />
+                                        Value="." />
                 <DiscreteStringKeyFrame KeyTime="0:0:2"
-                                        Value="Loading items.." />
+                                        Value=".." />
                 <DiscreteStringKeyFrame KeyTime="0:0:3"
-                                        Value="Loading items..." />
+                                        Value="..." />
             </StringAnimationUsingKeyFrames>
         </Storyboard>
+        
         <ControlTemplate x:Key="ItemsGridTemplate">
             <DataGrid ItemsSource="{Binding Items}"
                   AutoGenerateColumns="False"
@@ -59,16 +60,22 @@
                 </DataGrid.Columns>
             </DataGrid>
         </ControlTemplate>
+        
         <ControlTemplate x:Key="ItemsLoadingTemplate">
-            <TextBlock HorizontalAlignment="Center"
-                       VerticalAlignment="Center">
-                <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="Loaded">
-                        <BeginStoryboard Storyboard="{StaticResource LoadingStoryboard}" />
-                    </EventTrigger>
-                </TextBlock.Triggers>
-            </TextBlock>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <TextBlock Text="Loading items" />
+                <TextBlock>
+                    <TextBlock.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource LoadingStoryboard}" />
+                        </EventTrigger>
+                    </TextBlock.Triggers>
+                </TextBlock>
+            </StackPanel>
         </ControlTemplate>
+        
         <Style x:Key="ItemsGridStyle"
                TargetType="Control">
             <Style.Triggers>
@@ -85,7 +92,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    
+
     <Grid DataContext="{StaticResource ViewModel}">
         <Control Style="{StaticResource ItemsGridStyle}">
         </Control>

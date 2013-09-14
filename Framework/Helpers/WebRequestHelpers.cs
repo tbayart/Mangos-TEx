@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace Framework.Helpers
 {
@@ -10,20 +12,20 @@ namespace Framework.Helpers
         {
             var request = WebRequest.Create(address);
             var response = request.GetResponse();
-            byte[] buffer = new byte[response.ContentLength];
-            int readTotal = 0;
+            byte[] buffer = new byte[1024];
+            StringBuilder sb = new StringBuilder();
 
-            Stream responseStream = response.GetResponseStream();
-            while (readTotal < response.ContentLength)
+            using (Stream responseStream = response.GetResponseStream())
             {
-                int remaining = (int)(response.ContentLength - readTotal);
-                int read = responseStream.Read(buffer, readTotal, remaining);
-                if (read == 0)
-                    throw new Exception("Connection lost ?");
-                readTotal += read;
+                for (; ; )
+                {
+                    int read = responseStream.Read(buffer, 0, buffer.Length);
+                    if (read == 0)
+                        break;
+                    sb.Append(System.Text.Encoding.UTF8.GetString(buffer, 0, read));
+                }
             }
-
-            return System.Text.Encoding.UTF8.GetString(buffer);
+            return sb.ToString();
         }
     }
 }

@@ -39,9 +39,10 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public MainWindowViewModel()
         {
-            var proxy = new WebProxy("proxy.elior.net", 8080);
-            proxy.UseDefaultCredentials = true;
-            WebRequest.DefaultWebProxy = proxy;
+            WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
+            //var character = c.GetCharacterData("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
+            //var character = c.GetCharacterData("trollbane", "Hayase", WowApi.WowApiCharacterDataField.All);
+            var character = c.CharTest();
 
             this.ItemsLoaded += OnItemsLoaded;
             this.ItemLocale += OnItemLocale;
@@ -50,7 +51,7 @@ namespace MangosTEx.ViewModels
             //Locales = WowFramework.Helpers.LocaleHelpers.GetCultures();
             //provider.ItemsLocale(items, CultureInfo.GetCultureInfo("fr-fr"));
 
-            // wowhead, items de test
+            // wowhead test items
             // http://fr.wowhead.com/item=756
             // http://fr.wowhead.com/item=728
             // http://fr.wowhead.com/object=191656
