@@ -42,15 +42,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\JTokenHelpers.cs" />
+    <Compile Include="Models\Achievement.cs" />
     <Compile Include="Models\Battleground.cs" />
     <Compile Include="Models\BattlePet.cs" />
     <Compile Include="Models\Boss.cs" />
-    <Compile Include="Models\CharacterProfessions.cs" />
-    <Compile Include="Models\CharacterReputation.cs" />
-    <Compile Include="Models\CharacterStats.cs" />
-    <Compile Include="Models\CharacterTalent.cs" />
-    <Compile Include="Models\CharacterTitle.cs" />
-    <Compile Include="Models\Character\AchievementsConverter.cs" />
+    <Compile Include="Models\Character\CharacterProfessions.cs" />
+    <Compile Include="Models\Character\CharacterReputation.cs" />
+    <Compile Include="Models\Character\CharacterStats.cs" />
+    <Compile Include="Models\Character\CharacterTalent.cs" />
+    <Compile Include="Models\Character\CharacterTitle.cs" />
+    <Compile Include="Models\Character\CharacterFeed.cs" />
+    <Compile Include="Models\Converters\CharacterAchievementsConverter.cs" />
     <Compile Include="Models\Character\CharacterPetSlot.cs" />
     <Compile Include="Models\Character\CharacterPet.cs" />
     <Compile Include="Models\Character\CharacterPets.cs" />
@@ -62,12 +65,14 @@
     <Compile Include="Models\Character\CharacterGuild.cs" />
     <Compile Include="Models\Character\CharacterAchievements.cs" />
     <Compile Include="Models\Character\CharacterAppearance.cs" />
-    <Compile Include="Models\Character\Character.cs" />
+    <Compile Include="Models\Character.cs" />
     <Compile Include="Models\Character\CharacterProgression.cs" />
     <Compile Include="Models\Character\CharacterPvp.cs" />
     <Compile Include="Models\Character\EquippedItem.cs" />
     <Compile Include="Models\Character\CharacterCreatures.cs" />
     <Compile Include="Models\Character\GuildEmblem.cs" />
+    <Compile Include="Models\Converters\CharacterFeedConverter.cs" />
+    <Compile Include="Models\Criteria.cs" />
     <Compile Include="Models\HunterPetSpec.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Profession.cs" />
@@ -96,9 +101,7 @@
       <Name>WowFramework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

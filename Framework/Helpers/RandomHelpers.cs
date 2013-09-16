@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace Framework.Helpers
 {
-    public static class RandomHelper
+    public static class RandomHelpers
     {
         private static readonly System.Random RandomSeed = new System.Random();
 

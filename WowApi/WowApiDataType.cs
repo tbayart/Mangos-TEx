@@ -7,13 +7,13 @@ namespace WowApi
         #region Internal
         internal enum WowApiDataKey
         {
-            c_races,
-            c_class,
-            c_achiev,
-            i_class,
+            character_races,
+            character_classes,
+            character_achievement,
+            item_classes,
             talents,
-            p_types,
-            achiev_id,
+            pet_types,
+            achievement_id,
             item_id,
             quest_id,
             recipe_id,
@@ -27,17 +27,17 @@ namespace WowApi
 
         internal static WowApiDataTypes _types = new WowApiDataTypes
         {
-            { WowApiDataKey.c_races,   "Character Races",        "data/character/races"        },
-            { WowApiDataKey.c_class,   "Character Classes",      "data/character/classes"      },
-            { WowApiDataKey.c_achiev,  "Character Achievements", "data/character/achievements" },
-            { WowApiDataKey.i_class,   "Item Classes",           "data/item/classes"           },
-            { WowApiDataKey.talents,   "Talents",                "data/talents"                },
-            { WowApiDataKey.p_types,   "Pet Types",              "data/pet/types"              },
-            { WowApiDataKey.achiev_id, "Achievement details",    "achievement/"                },
-            { WowApiDataKey.item_id,   "Item details",           "item/"                       },
-            { WowApiDataKey.quest_id,  "Quest details",          "quest/"                      },
-            { WowApiDataKey.recipe_id, "Recipe details",         "recipe/"                     },
-            { WowApiDataKey.spell_id,  "Spell details",          "spell/"                      },
+            { WowApiDataKey.character_races,        "Character Races",        "data/character/races"        },
+            { WowApiDataKey.character_classes,      "Character Classes",      "data/character/classes"      },
+            { WowApiDataKey.character_achievement,  "Character Achievements", "data/character/achievements" },
+            { WowApiDataKey.item_classes,           "Item Classes",           "data/item/classes"           },
+            { WowApiDataKey.talents,                "Talents",                "data/talents"                },
+            { WowApiDataKey.pet_types,              "Pet Types",              "data/pet/types"              },
+            { WowApiDataKey.achievement_id,         "Achievement details",    "achievement/"                },
+            { WowApiDataKey.item_id,                "Item details",           "item/"                       },
+            { WowApiDataKey.quest_id,               "Quest details",          "quest/"                      },
+            { WowApiDataKey.recipe_id,              "Recipe details",         "recipe/"                     },
+            { WowApiDataKey.spell_id,               "Spell details",          "spell/"                      },
         };
         #endregion Internal
 
@@ -56,14 +56,14 @@ namespace WowApi
 
         #region Static Properties
         // global resources
-        public static WowApiDataType CharacterRaces { get { return _types[WowApiDataKey.c_races]; } }
-        public static WowApiDataType CharacterClasses { get { return _types[WowApiDataKey.c_class]; } }
-        public static WowApiDataType CharacterAchievements { get { return _types[WowApiDataKey.c_achiev]; } }
-        public static WowApiDataType ItemClasses { get { return _types[WowApiDataKey.i_class]; } }
+        public static WowApiDataType CharacterRaces { get { return _types[WowApiDataKey.character_races]; } }
+        public static WowApiDataType CharacterClasses { get { return _types[WowApiDataKey.character_classes]; } }
+        public static WowApiDataType CharacterAchievements { get { return _types[WowApiDataKey.character_achievement]; } }
+        public static WowApiDataType ItemClasses { get { return _types[WowApiDataKey.item_classes]; } }
         public static WowApiDataType Talents { get { return _types[WowApiDataKey.talents]; } }
-        public static WowApiDataType PetTypes { get { return _types[WowApiDataKey.p_types]; } }
+        public static WowApiDataType PetTypes { get { return _types[WowApiDataKey.pet_types]; } }
         // resources by id
-        public static WowApiDataType Achievement { get { return _types[WowApiDataKey.achiev_id]; } }
+        public static WowApiDataType Achievement { get { return _types[WowApiDataKey.achievement_id]; } }
         public static WowApiDataType Item { get { return _types[WowApiDataKey.item_id]; } }
         public static WowApiDataType Quest { get { return _types[WowApiDataKey.quest_id]; } }
         public static WowApiDataType Recipe { get { return _types[WowApiDataKey.recipe_id]; } }

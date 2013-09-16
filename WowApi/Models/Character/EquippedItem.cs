@@ -8,6 +8,7 @@ namespace WowApi.Models
         public string Name { get; set; }
         public int Quality { get; set; }
         public string Icon { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
         public Dictionary<string, int> TooltipParams { get; set; }
     }
 }
