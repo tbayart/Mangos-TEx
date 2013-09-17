@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using WowApi.Models.Converters;
 
 namespace WowApi.Models
 {
-    public partial class Character
+    public class Character
     {
         public string Name { get; set; }
         public string Realm { get; set; }
@@ -20,7 +18,7 @@ namespace WowApi.Models
         public long LastModified { get; set; }
         public string Thumbnail { get; set; }
 
-        [JsonConverter(typeof(AchievementsConverter))]
+        [JsonConverter(typeof(CharacterAchievementsConverter))]
         public CharacterAchievements Achievements { get; set; }
 
         public CharacterAppearance Appearance { get; set; }

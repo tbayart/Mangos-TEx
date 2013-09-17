@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WowApi.Helpers;
 
-namespace WowApi.Models
+namespace WowApi.Models.Converters
 {
     public class CharacterFeedConverter : JsonConverter
     {

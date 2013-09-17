@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using Framework.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WowApi.Helpers;
 
-namespace WowApi.Models
+namespace WowApi.Models.Converters
 {
-    public class AchievementsConverter : JsonConverter
+    public class CharacterAchievementsConverter : JsonConverter
     {
         #region JsonConverter Members
         public override bool CanConvert(Type objectType)

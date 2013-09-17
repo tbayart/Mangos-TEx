@@ -1,11 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using WowApi.Models.Generic;
 
 namespace WowApi.Models
 {
-    public class CharacterMounts
+    public class CharacterMounts : CharacterCreatures<CharacterMounts.Mount>
     {
-        public List<CharacterMount> Collected { get; set; }
-        public int NumCollected { get; set; }
-        public int NumNotCollected { get; set; }
+        public class Mount
+        {
+            public int CreatureId { get; set; }
+            public string Name { get; set; }
+            public string Icon { get; set; }
+            public bool IsAquatic { get; set; }
+            public bool IsFlying { get; set; }
+            public bool IsGround { get; set; }
+            public bool IsJumping { get; set; }
+            public int ItemId { get; set; }
+            public int QualityId { get; set; }
+            public int SpellId { get; set; }
+        }
     }
 }
