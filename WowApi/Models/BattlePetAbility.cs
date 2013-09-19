@@ -1,6 +1,6 @@
 ﻿namespace WowApi.Models
 {
-    public class BattlePet
+    public class BattlePetAbility
     {
         public int Cooldown { get; set; }
         public string Icon { get; set; }

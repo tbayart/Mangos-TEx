@@ -3,9 +3,15 @@ using System.Linq;
 
 namespace WowApi
 {
+    /// <summary>
+    /// This class provides character fields
+    /// </summary>
     public class WowApiCharacterDataField
     {
         #region Internal
+        /// <summary>
+        /// All field types
+        /// </summary>
         internal enum WowApiCharacterDataKey
         {
             achievements,
@@ -27,22 +33,28 @@ namespace WowApi
             titles
         }
 
+        /// <summary>
+        /// Storage class for each field data
+        /// </summary>
         internal class WowApiCharacterDataFields : Dictionary<WowApiCharacterDataKey, WowApiCharacterDataField>
         {
             public void Add(WowApiCharacterDataKey key, string name, string field) { Add(key, new WowApiCharacterDataField(name, field)); }
         }
 
+        /// <summary>
+        /// The list of all field type, name and field name
+        /// </summary>
         private static WowApiCharacterDataFields _fields = new WowApiCharacterDataFields
         {
             { WowApiCharacterDataKey.achievements, "Achievements", "achievements" },
             { WowApiCharacterDataKey.appearance,   "Appearance",   "appearance"   },
             { WowApiCharacterDataKey.feed,         "Feed",         "feed"         },
             { WowApiCharacterDataKey.guild,        "Guild",        "guild"        },
-            { WowApiCharacterDataKey.hunterPets,   "Hunter Pets",  "hunterPets"   },
+            { WowApiCharacterDataKey.hunterPets,   "Hunter pets",  "hunterPets"   },
             { WowApiCharacterDataKey.items,        "Items",        "items"        },
             { WowApiCharacterDataKey.mounts,       "Mounts",       "mounts"       },
             { WowApiCharacterDataKey.pets,         "Pets",         "pets"         },
-            { WowApiCharacterDataKey.petSlots,     "Pet Slots",    "petSlots"     },
+            { WowApiCharacterDataKey.petSlots,     "Pet slots",    "petSlots"     },
             { WowApiCharacterDataKey.professions,  "Professions",  "professions"  },
             { WowApiCharacterDataKey.progression,  "Progression",  "progression"  },
             { WowApiCharacterDataKey.pvp,          "Pvp",          "pvp"          },
@@ -55,6 +67,11 @@ namespace WowApi
         #endregion Internal
 
         #region Ctor
+        /// <summary>
+        /// Field data contructor
+        /// </summary>
+        /// <param name="name">The field's user friendly name</param>
+        /// <param name="field">The field label for WoW API request</param>
         private WowApiCharacterDataField(string name, string field)
         {
             Name = name;
@@ -63,7 +80,13 @@ namespace WowApi
         #endregion Ctor
 
         #region Properties
+        /// <summary>
+        /// The field's user friendly name
+        /// </summary>
         public string Name { get; private set; }
+        /// <summary>
+        /// The field label for WoW API request
+        /// </summary>
         public string Field { get; private set; }
         #endregion Properties
 

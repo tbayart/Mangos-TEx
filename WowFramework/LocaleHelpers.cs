@@ -6,8 +6,18 @@ using Framework.Collections;
 
 namespace WowFramework.Helpers
 {
+    /// <summary>
+    /// Helpers to manage cultures with mangos, WoW API and other data providers
+    /// </summary>
     public static class LocaleHelpers
     {
+        #region Fields
+        /// <summary>
+        /// List of supported cultures
+        /// - culture string
+        /// - culture offset for mangos
+        /// - host to request WoW API
+        /// </summary>
         private static IEnumerable<Tuple<string, int, string>> _localeInfoList = new TupleList<string, int, string>
         {
             { "en-US", 0, "us.battle.net" },
@@ -24,9 +34,41 @@ namespace WowFramework.Helpers
             { "zh-TW", 5, "tw.battle.net" },
             { "zh-CN", 4, "www.battlenet.com.cn" },
         };
+        #endregion Fields
 
+        #region Private Methods
+        private static Tuple<string, int, string> GetItem(CultureInfo culture)
+        {
+            culture = ValidateCulture(culture);
+            // locate the culture
+            return _localeInfoList.First(o => o.Item1 == culture.Name);
+        }
+        #endregion Private Methods
+
+        #region Public Methods
+        /// <summary>
+        /// The default culture
+        /// </summary>
         public static CultureInfo DefaultCulture { get { return CultureInfo.GetCultureInfo("en-US"); } }
 
+        /// <summary>
+        /// Validates a culture by returning a supported culture for a given one
+        /// Returns the provided culture if supported
+        /// Else returns the default supported culture
+        /// </summary>
+        /// <param name="culture">The requested culture</param>
+        /// <returns>A supported culture</returns>
+        public static CultureInfo ValidateCulture(CultureInfo culture)
+        {
+            return _localeInfoList.Any(o => o.Item1 == culture.Name)
+                ? culture
+                : DefaultCulture;
+        }
+
+        /// <summary>
+        /// Give access to all supported cultures
+        /// </summary>
+        /// <returns>An array of supported CultureInfo</returns>
         public static CultureInfo[] GetCultures()
         {
             return _localeInfoList
@@ -34,31 +76,36 @@ namespace WowFramework.Helpers
                 .ToArray();
         }
 
-        private static Tuple<string, int, string> GetItem(CultureInfo culture)
-        {
-            // try to locate culture
-            // if not found, return default "en-US"
-            return _localeInfoList.FirstOrDefault(o => o.Item1 == culture.Name)
-                ?? _localeInfoList.First(o => o.Item1 == DefaultCulture.Name);
-        }
-
-        // Get locale for a given culture
+        /// <summary>
+        /// Provide WoW API locale for a given culture
+        /// </summary>
+        /// <param name="culture">The requested culture</param>
+        /// <returns></returns>
         public static string GetLocale(CultureInfo culture)
         {
             // return the culture name translated to locale name
             return GetItem(culture).Item1.Replace('-', '_');
         }
 
-        // returns the locale offset for a culture
+        /// <summary>
+        /// Provide the locale offset for a culture
+        /// </summary>
+        /// <param name="culture">The requested culture</param>
+        /// <returns>The culture offset</returns>
         public static int GetOffset(CultureInfo culture)
         {
             return GetItem(culture).Item2;
         }
 
-        // Get host name for a given culture
+        /// <summary>
+        /// Provide WoW API host name for a given culture
+        /// </summary>
+        /// <param name="culture">The requested culture</param>
+        /// <returns>The woW API host string</returns>
         public static string GetHost(CultureInfo culture)
         {
-            return GetItem(culture).Item3;
+            return string.Format("https://{0}/api/wow/", GetItem(culture).Item3);
         }
+        #endregion Public Methods
     }
 }

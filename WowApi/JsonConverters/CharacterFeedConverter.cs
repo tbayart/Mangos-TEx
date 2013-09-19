@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using WowApi.Models;
 
-namespace WowApi.Models.Converters
+namespace WowApi.JsonConverters
 {
     public class CharacterFeedConverter : JsonConverter
     {
         #region JsonConverter Members
         public override bool CanConvert(Type objectType)
         {
-            throw new NotImplementedException();
+            return typeof(IEnumerable<CharacterFeed>).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var output = new List<CharacterFeed>();
             JArray jarray = JArray.Load(reader);
 
+            var output = new List<CharacterFeed>(jarray.Count);
             foreach (JToken token in jarray)
             {
                 string jsonType = token["type"].Value<string>();

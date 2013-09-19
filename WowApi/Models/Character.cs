@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using WowApi.Models.Converters;
+using WowApi.JsonConverters;
 
 namespace WowApi.Models
 {
@@ -51,6 +51,7 @@ namespace WowApi.Models
 
         public CharacterStats Stats { get; set; }
 
+        [JsonConverter(typeof(CharacterTalentsConverter))]
         public List<CharacterTalent> Talents { get; set; }
 
         public List<CharacterTitle> Titles { get; set; }

@@ -13,16 +13,12 @@ using System.Xml;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Framework;
 
 namespace MangosTEx.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private class EventArgs<T> : EventArgs
-        {
-            public T Arg { get; protected set; }
-        }
-
         private class MangosDataItemEventArgs : EventArgs<List<MangosData.Models.Item>>
         {
             public MangosDataItemEventArgs(List<MangosData.Models.Item> items) { Arg = items; }
@@ -40,11 +36,12 @@ namespace MangosTEx.ViewModels
         public MainWindowViewModel()
         {
             WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
-            //var character = c.GetCharacterData("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
-            //var character = c.GetCharacterData("trollbane", "Hayase", WowApi.WowApiCharacterDataField.All);
-			
-			// I downloaded character data to avoid querying API for debugging purpose
-            var character = c.CharTest("data_test.json");
+
+            WowApi.Models.Character character;
+            //character = c.GetCharacter("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
+            //character = c.GetCharacter("trollbane", "Hayase", WowApi.WowApiCharacterDataField.All);
+            character = c.GetCharacter("frostmane", "Galacta", WowApi.WowApiCharacterDataField.All);
+            System.Diagnostics.Debugger.Break();
 
             this.ItemsLoaded += OnItemsLoaded;
             this.ItemLocale += OnItemLocale;

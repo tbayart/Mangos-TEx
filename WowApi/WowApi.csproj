@@ -43,15 +43,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\JTokenHelpers.cs" />
+    <Compile Include="JsonConverters\ContainerConverter.cs" />
+    <Compile Include="JsonConverters\AchievementsConverter.cs" />
+    <Compile Include="JsonConverters\CharacterTalentsConverter.cs" />
+    <Compile Include="JsonConverters\TalentsConverter.cs" />
     <Compile Include="Models\Achievement.cs" />
-    <Compile Include="Models\BattlePet.cs" />
+    <Compile Include="Models\BattlePetStats.cs" />
+    <Compile Include="Models\CharacterAchievement.cs" />
+    <Compile Include="Models\CharacterClass.cs" />
+    <Compile Include="Models\CharacterRace.cs" />
     <Compile Include="Models\Character\CharacterProfessions.cs" />
     <Compile Include="Models\Character\CharacterReputation.cs" />
     <Compile Include="Models\Character\CharacterStats.cs" />
     <Compile Include="Models\Character\CharacterTalent.cs" />
     <Compile Include="Models\Character\CharacterTitle.cs" />
     <Compile Include="Models\Character\CharacterFeed.cs" />
-    <Compile Include="Models\Converters\CharacterAchievementsConverter.cs" />
+    <Compile Include="JsonConverters\CharacterAchievementsConverter.cs" />
     <Compile Include="Models\Character\CharacterPetSlot.cs" />
     <Compile Include="Models\Character\CharacterPets.cs" />
     <Compile Include="Models\Character\CharacterMounts.cs" />
@@ -63,11 +70,19 @@
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\Character\CharacterProgression.cs" />
     <Compile Include="Models\Character\CharacterPvp.cs" />
+    <Compile Include="Models\BattlePetAbility.cs" />
+    <Compile Include="Models\BattlePetSpecies.cs" />
+    <Compile Include="Models\AchievementNode.cs" />
+    <Compile Include="Models\ItemSet.cs" />
     <Compile Include="Models\Generic\CharacterCreatures.cs" />
-    <Compile Include="Models\Converters\CharacterFeedConverter.cs" />
-    <Compile Include="Models\Criteria.cs" />
+    <Compile Include="JsonConverters\CharacterFeedConverter.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemClass.cs" />
+    <Compile Include="Models\PetType.cs" />
+    <Compile Include="Models\Quest.cs" />
+    <Compile Include="Models\Recipe.cs" />
     <Compile Include="Models\Spell.cs" />
+    <Compile Include="Models\Talent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WowApiCharacterDataField.cs" />
     <Compile Include="WowApiClient.cs" />

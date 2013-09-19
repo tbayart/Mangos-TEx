@@ -4,15 +4,16 @@ using Framework.Helpers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using WowApi.Helpers;
+using WowApi.Models;
 
-namespace WowApi.Models.Converters
+namespace WowApi.JsonConverters
 {
     public class CharacterAchievementsConverter : JsonConverter
     {
         #region JsonConverter Members
         public override bool CanConvert(Type objectType)
         {
-            throw new NotImplementedException();
+            return typeof(CharacterAchievements).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -47,7 +48,7 @@ namespace WowApi.Models.Converters
                 token = jobject["criteriaQuantity"];
                 if (token != null)
                 {
-                    var list = token.ToArray<int>();
+                    var list = token.ToArray<long>();
                     output.Criterias.Fusion(list, (crit, o) => crit.Quantity = o);
                 }
                 token = jobject["criteriaTimestamp"];

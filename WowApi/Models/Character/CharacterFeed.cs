@@ -34,7 +34,7 @@ namespace WowApi.Models
         {
             public new const string Type = "BOSSKILL";
             public Achievement Achievement { get; set; }
-            public Criteria Criteria { get; set; }
+            public Achievement.Criteria Criteria { get; set; }
             public bool FeatOfStrength { get; set; }
             public string Name { get; set; }
             public int Quantity { get; set; }
@@ -46,7 +46,7 @@ namespace WowApi.Models
             public new const string Type = "CRITERIA";
             public Achievement Achievement { get; set; }
             public bool FeatOfStrength { get; set; }
-            public Criteria Criteria { get; set; }
+            public Achievement.Criteria Criteria { get; set; }
         }
 
         // Type "LOOT"
