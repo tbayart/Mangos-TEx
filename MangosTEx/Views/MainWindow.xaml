@@ -19,11 +19,11 @@
                                            Duration="0:0:4"
                                            RepeatBehavior="Forever">
                 <DiscreteStringKeyFrame KeyTime="0:0:0"
-                                        Value="" />
+                                        Value="   " />
                 <DiscreteStringKeyFrame KeyTime="0:0:1"
-                                        Value="." />
+                                        Value=".  " />
                 <DiscreteStringKeyFrame KeyTime="0:0:2"
-                                        Value=".." />
+                                        Value=".. " />
                 <DiscreteStringKeyFrame KeyTime="0:0:3"
                                         Value="..." />
             </StringAnimationUsingKeyFrames>
@@ -65,7 +65,7 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="Loading items" />
+                <TextBlock Text="Loading items from database" />
                 <TextBlock>
                     <TextBlock.Triggers>
                         <EventTrigger RoutedEvent="Loaded">

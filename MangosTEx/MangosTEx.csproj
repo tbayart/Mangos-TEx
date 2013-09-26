@@ -84,8 +84,6 @@
     </Compile>
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Converters\IsBiggerThanConverter.cs" />
-    <Compile Include="Grabbers\Models\Item.cs" />
-    <Compile Include="Grabbers\WowheadGrabber.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -134,6 +132,10 @@
     <ProjectReference Include="..\WowFramework\WowFramework.csproj">
       <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
       <Name>WowFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WowheadApi\WowheadApi.csproj">
+      <Project>{f74f3d0d-af9f-4cf4-a108-617a17b0f358}</Project>
+      <Name>WowheadApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

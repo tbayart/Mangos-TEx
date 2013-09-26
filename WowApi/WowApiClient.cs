@@ -226,7 +226,7 @@ namespace WowApi
         }
 
         /// <summary>
-        /// Thitem API provides data about items
+        /// The item API provides data about an individual item
         /// http://eu.battle.net/api/wow/item/18803
         /// </summary>
         /// <param name="id">The item id</param>

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Windows.Input;
-using MangosTEx.Grabbers;
 using Framework.Helpers;
 using System.Globalization;
 using Framework.Commands;
@@ -14,6 +13,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Framework;
+using WowheadApi;
 
 namespace MangosTEx.ViewModels
 {
@@ -24,9 +24,9 @@ namespace MangosTEx.ViewModels
             public MangosDataItemEventArgs(List<MangosData.Models.Item> items) { Arg = items; }
         }
 
-        private class LocaleItemEventArgs : EventArgs<MangosTEx.Grabbers.Models.Item>
+        private class LocaleItemEventArgs : EventArgs<WowheadApi.Models.Item>
         {
-            public LocaleItemEventArgs(MangosTEx.Grabbers.Models.Item loc) { Arg = loc; }
+            public LocaleItemEventArgs(WowheadApi.Models.Item loc) { Arg = loc; }
         }
 
         private event EventHandler<MangosDataItemEventArgs> ItemsLoaded;
@@ -35,13 +35,12 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public MainWindowViewModel()
         {
-            WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
-
-            WowApi.Models.Character character;
+            //WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
+            //WowApi.Models.Character character;
             //character = c.GetCharacter("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
             //character = c.GetCharacter("trollbane", "Hayase", WowApi.WowApiCharacterDataField.All);
-            character = c.GetCharacter("frostmane", "Galacta", WowApi.WowApiCharacterDataField.All);
-            System.Diagnostics.Debugger.Break();
+            //character = c.GetCharacter("frostmane", "Galacta", WowApi.WowApiCharacterDataField.All);
+            //System.Diagnostics.Debugger.Break();
 
             this.ItemsLoaded += OnItemsLoaded;
             this.ItemLocale += OnItemLocale;
@@ -78,8 +77,8 @@ namespace MangosTEx.ViewModels
         {
             Parallel.ForEach(items, item =>
             {
-                var grabber = new WowheadGrabber("fr");
-                MangosTEx.Grabbers.Models.Item loc = grabber.GetItem(item.Id);
+                var grabber = new WowheadClient(CultureInfo.GetCultureInfo("zh-TW"));
+                WowheadApi.Models.Item loc = grabber.GetItem(item.Id);
                 ItemLocale.Invoke(this, new LocaleItemEventArgs(loc));
             });
         }
