@@ -14,27 +14,23 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using Framework;
 using WowheadApi;
+using System.Reactive.Linq;
+using MangosTEx.Events;
 
 namespace MangosTEx.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private class MangosDataItemEventArgs : EventArgs<List<MangosData.Models.Item>>
-        {
-            public MangosDataItemEventArgs(List<MangosData.Models.Item> items) { Arg = items; }
-        }
-
-        private class LocaleItemEventArgs : EventArgs<WowheadApi.Models.Item>
-        {
-            public LocaleItemEventArgs(WowheadApi.Models.Item loc) { Arg = loc; }
-        }
-
-        private event EventHandler<MangosDataItemEventArgs> ItemsLoaded;
-        private event EventHandler<LocaleItemEventArgs> ItemLocale;
+        #region EventHandlers
+        private event EventHandler<LocaleItemEventArgs> UpdateItemLocaleEvent;
+        private event EventHandler<LocaleGameObjectEventArgs> UpdateGameObjectLocaleEvent;
+        #endregion EventHandlers
 
         #region Ctor
         public MainWindowViewModel()
         {
+            InitializeCommands();
+
             //WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
             //WowApi.Models.Character character;
             //character = c.GetCharacter("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
@@ -42,48 +38,93 @@ namespace MangosTEx.ViewModels
             //character = c.GetCharacter("frostmane", "Galacta", WowApi.WowApiCharacterDataField.All);
             //System.Diagnostics.Debugger.Break();
 
-            this.ItemsLoaded += OnItemsLoaded;
-            this.ItemLocale += OnItemLocale;
-            Task.Factory.StartNew(LoadItems);
-
-            //Locales = WowFramework.Helpers.LocaleHelpers.GetCultures();
-            //provider.ItemsLocale(items, CultureInfo.GetCultureInfo("fr-fr"));
-
-            // wowhead test items
-            // http://fr.wowhead.com/item=756
-            // http://fr.wowhead.com/item=728
+            // wowhead tests
             // http://fr.wowhead.com/object=191656
+            //var grabber = new WowheadClient(CultureInfo.CurrentCulture);
+            //WowheadApi.Models.GameObject obj1 = grabber.GetGameObject(3714);
+            //WowheadApi.Models.GameObject obj2 = grabber.GetGameObject(191656);
 
-            //var c = new WowApi.WowApiClient();
-            //WowApi.Models.Item item = c.GetItem(756);
+            // loading items
+            //LoadItems();
+            // loading game objects
+            LoadGameObjects();
         }
+        #endregion Ctor
 
-        void LoadItems()
+        #region Properties
+        public CultureInfo[] Locales
         {
-            var provider = new MangosData.MangosProvider();
-            var items = provider.GetItems()
-                .Where(o => o.Id > 700 && o.Id < 1000)
-                .ToList();
-            ItemsLoaded.Invoke(this, new MangosDataItemEventArgs(items));
+            get { return _locales; }
+            private set
+            {
+                _locales = value;
+                RaisePropertyChanged(() => Locales);
+            }
         }
+        private CultureInfo[] _locales;
 
-        private void OnItemsLoaded(object sender, MangosDataItemEventArgs e)
+        public IEnumerable<MangosData.Models.Item> Items
         {
-            Items = e.Arg;
-            Task.Factory.StartNew(() => GetLocales(e.Arg));
+            get { return _items; }
+            private set
+            {
+                _items = value;
+                RaisePropertyChanged(() => Items);
+            }
+        }
+        private IEnumerable<MangosData.Models.Item> _items;
+
+        public IEnumerable<MangosData.Models.GameObject> GameObjects
+        {
+            get { return _gameObjects; }
+            private set
+            {
+                _gameObjects = value;
+                RaisePropertyChanged(() => GameObjects);
+            }
+        }
+        private IEnumerable<MangosData.Models.GameObject> _gameObjects;
+        #endregion Properties
+
+        #region Methods
+        private void OnError(Exception ex)
+        {
+            throw ex;
+        }
+        #endregion Methods
+
+        #region Items Test Methods
+        private void LoadItems()
+        {
+            Observable.Start(() =>
+                {
+                    // load a bunch of items from database
+                    var provider = new MangosData.MangosProvider();
+                    return provider.GetItems()
+                        .Where(o => o.Id >= 900 && o.Id < 1000)
+                        .AsEnumerable();
+                })
+                .ObserveOnDispatcher()
+                .Subscribe(result =>
+                {
+                    Items = result;
+                    UpdateItemLocaleEvent += OnUpdateItemLocale;
+                    Task.Factory.StartNew(() => GetItemsLocales(result));
+                }, OnError);
         }
 
-        private void GetLocales(List<MangosData.Models.Item> items)
+        private void GetItemsLocales(IEnumerable<MangosData.Models.Item> items)
         {
             Parallel.ForEach(items, item =>
             {
                 var grabber = new WowheadClient(CultureInfo.GetCultureInfo("zh-TW"));
                 WowheadApi.Models.Item loc = grabber.GetItem(item.Id);
-                ItemLocale.Invoke(this, new LocaleItemEventArgs(loc));
+                UpdateItemLocaleEvent.Invoke(this, new LocaleItemEventArgs(loc));
             });
+            UpdateItemLocaleEvent -= OnUpdateItemLocale;
         }
 
-        private void OnItemLocale(object sender, LocaleItemEventArgs e)
+        private void OnUpdateItemLocale(object sender, LocaleItemEventArgs e)
         {
             if (e.Arg == null)
                 return;
@@ -96,58 +137,59 @@ namespace MangosTEx.ViewModels
                 item.Error = e.Arg.Error;
             }
         }
-        #endregion Ctor
+        #endregion Items Test Methods
 
-        #region Properties
-        private CultureInfo[] _locales;
-        public CultureInfo[] Locales
+        #region GameObjects Test Methods
+        private void LoadGameObjects()
         {
-            get { return _locales; }
-            private set
-            {
-                _locales = value;
-                RaisePropertyChanged(() => Locales);
-            }
+            Observable.Start(() =>
+                {
+                    int minId = 0;
+                    // load a bunch of objects from database
+                    var provider = new MangosData.MangosProvider();
+                    return provider.GetGameObjects()
+//                        .Where(o => o.Type == (int)MangosData.Models.Bases.GameObjectType.TEXT)
+                        .Where(o => o.Id > minId)
+                        .Take(150)
+                        .ToList();
+                })
+                .ObserveOnDispatcher()
+                .Subscribe(result =>
+                {
+                    GameObjects = result;
+                    UpdateGameObjectLocaleEvent += OnUpdateGameObjectLocale;
+                    Task.Factory.StartNew(() => GetGameObjectsLocales(result));
+                }, OnError);
         }
 
-        private List<MangosData.Models.Item> _items;
-        public List<MangosData.Models.Item> Items
+        private void GetGameObjectsLocales(IEnumerable<MangosData.Models.GameObject> gameObjects)
         {
-            get { return _items; }
-            private set
+            Parallel.ForEach(gameObjects, go =>
             {
-                _items = value;
-                RaisePropertyChanged(() => Items);
-            }
+                var grabber = new WowheadClient(CultureInfo.CurrentCulture);
+                WowheadApi.Models.GameObject loc = grabber.GetGameObject(go.Id);
+                UpdateGameObjectLocaleEvent.Invoke(this, new LocaleGameObjectEventArgs(loc));
+            });
+            UpdateGameObjectLocaleEvent -= OnUpdateGameObjectLocale;
         }
 
-        #endregion Properties
+        private void OnUpdateGameObjectLocale(object sender, LocaleGameObjectEventArgs e)
+        {
+            if (e.Arg == null)
+                return;
+
+            var go = GameObjects.FirstOrDefault(o => o.Id == e.Arg.Id);
+            if (go != null)
+            {
+                go.LocalizedName = e.Arg.Name;
+                go.Error = e.Arg.Error;
+            }
+        }
+        #endregion GameObjects Test Methods
 
         #region Commands
         private void InitializeCommands()
         {
-            RefreshDateCommand = new DelegateCommand(OnRefreshDate);
-            RefreshPersonsCommand = new DelegateCommand(OnRefreshPersons);
-            DoNothingCommand = new DelegateCommand(OnDoNothing, CanExecuteDoNothing);
-        }
-
-        public ICommand RefreshDateCommand { get; private set; }
-        private void OnRefreshDate()
-        {
-        }
-
-        public ICommand RefreshPersonsCommand { get; private set; }
-        private void OnRefreshPersons()
-        {
-        }
-
-        public ICommand DoNothingCommand { get; private set; }
-        private void OnDoNothing()
-        {
-        }
-        private bool CanExecuteDoNothing()
-        {
-            return false;
         }
         #endregion Commands
     }

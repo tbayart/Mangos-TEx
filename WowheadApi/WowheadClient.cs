@@ -18,7 +18,6 @@ namespace WowheadApi
     public class WowheadClient : NotificationObject
     {
         // itemset   :              http://www.wowhead.com/itemset=1196
-        // entités   :              http://www.wowhead.com/object=3714
         // event     :              http://www.wowhead.com/event=181
         // faction   :              http://www.wowhead.com/faction=1067
         // hunterpet :              http://www.wowhead.com/pets=0
@@ -95,6 +94,23 @@ namespace WowheadApi
             string data = WebRequestHelpers.DownloadString(address);
             // create a grabber
             var grabber = new ItemGrabber();
+            // extract item data
+            return grabber.Extract(data, id);
+        }
+
+        /// <summary>
+        /// Provide data about game objects
+        /// http://www.wowhead.com/object=3714
+        /// </summary>
+        /// <param name="id">The game object id</param>
+        /// <returns>The game object</returns>
+        public GameObject GetGameObject(int id)
+        {
+            // retrieve html data
+            string address = GetUrl("object", id);
+            string data = WebRequestHelpers.DownloadString(address);
+            // create a grabber
+            var grabber = new GameObjectGrabber();
             // extract item data
             return grabber.Extract(data, id);
         }
