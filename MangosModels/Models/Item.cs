@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using Framework.MVVM;
-using MangosData.Models.Bases;
+﻿using Framework.MVVM;
 
-namespace MangosData.Models
+namespace MangosModels
 {
-    public class GameObject : NotificationObject
+    public class Item : NotificationObject
     {
         public int Id
         {
@@ -17,19 +15,6 @@ namespace MangosData.Models
         }
         private int _id;
 
-        public GameObjectType GameObjectType { get { return (GameObjectType)Type; } }
-        public int Type
-        {
-            get { return _type; }
-            set
-            {
-                _type = value;
-                RaisePropertyChanged(() => Type);
-                RaisePropertyChanged(() => GameObjectType);
-            }
-        }
-        private int _type;
-
         public string Name
         {
             get { return _name; }
@@ -40,6 +25,17 @@ namespace MangosData.Models
             }
         }
         private string _name;
+
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                RaisePropertyChanged(() => Description);
+            }
+        }
+        private string _description;
 
         public string LocalizedName
         {
@@ -52,16 +48,16 @@ namespace MangosData.Models
         }
         private string _localizedName;
 
-        public IEnumerable<GameObjectData> RelatedData
+        public string LocalizedDescription
         {
-            get { return _relatedData; }
+            get { return _localizedDescription; }
             set
             {
-                _relatedData = value;
-                RaisePropertyChanged(() => RelatedData);
+                _localizedDescription = value;
+                RaisePropertyChanged(() => LocalizedDescription);
             }
         }
-        private IEnumerable<GameObjectData> _relatedData;
+        private string _localizedDescription;
 
         public string Error
         {

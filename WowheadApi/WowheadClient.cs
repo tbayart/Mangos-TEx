@@ -74,9 +74,22 @@ namespace WowheadApi
             _baseQuery = string.Concat(_baseUrl, "{0}={1}");
         }
 
-        private string GetUrl(string type, int id)
+        private string GetData(string type, int id)
         {
-            return string.Format(_baseQuery, type, id);
+            string address= string.Format(_baseQuery, type, id);
+            return WebRequestHelpers.DownloadString(address);
+        }
+
+        private T Get<T, G>(string type, int id)
+            where T : class
+            where G : IGrabber<T>, new()
+        {
+            // retrieve html data
+            string data = GetData(type, id);
+            // instanciate the grabber
+            IGrabber<T> grabber = new G();
+            // extract data
+            return grabber.Extract(data, id);
         }
         #endregion Private Methods
 
@@ -89,13 +102,7 @@ namespace WowheadApi
         /// <returns>The item</returns>
         public Item GetItem(int id)
         {
-            // retrieve html data
-            string address = GetUrl("item", id);
-            string data = WebRequestHelpers.DownloadString(address);
-            // create a grabber
-            var grabber = new ItemGrabber();
-            // extract item data
-            return grabber.Extract(data, id);
+            return Get<Item, ItemGrabber>("item", id);
         }
 
         /// <summary>
@@ -106,13 +113,7 @@ namespace WowheadApi
         /// <returns>The game object</returns>
         public GameObject GetGameObject(int id)
         {
-            // retrieve html data
-            string address = GetUrl("object", id);
-            string data = WebRequestHelpers.DownloadString(address);
-            // create a grabber
-            var grabber = new GameObjectGrabber();
-            // extract item data
-            return grabber.Extract(data, id);
+            return Get<GameObject, GameObjectGrabber>("object", id);
         }
         #endregion Public Methods
     }

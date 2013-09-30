@@ -1,6 +1,6 @@
 ﻿using Framework.MVVM;
 
-namespace MangosData.Models.Bases
+namespace MangosModels.ModelBase
 {
     public abstract class GameObjectData : NotificationObject
     {

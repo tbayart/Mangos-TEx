@@ -2994,7 +2994,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MangosModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="MangosEntities" annotation:LazyLoadingEnabled="true" a:TypeAccess="Internal" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
+        <EntityContainer Name="MangosEntities" annotation:LazyLoadingEnabled="true" a:TypeAccess="Public" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration">
           <EntitySet Name="achievement_criteria_requirement" EntityType="MangosModel.achievement_criteria_requirement" />
           <EntitySet Name="achievement_reward" EntityType="MangosModel.achievement_reward" />
           <EntitySet Name="areatrigger_involvedrelation" EntityType="MangosModel.areatrigger_involvedrelation" />

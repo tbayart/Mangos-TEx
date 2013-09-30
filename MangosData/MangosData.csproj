@@ -314,7 +314,6 @@
     <Compile Include="Context\milling_loot_template.cs">
       <DependentUpon>MangosEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="Context\Models\locales_item.cs" />
     <Compile Include="Context\npc_gossip.cs">
       <DependentUpon>MangosEntities.tt</DependentUpon>
     </Compile>
@@ -480,12 +479,6 @@
     <Compile Include="Context\world_template.cs">
       <DependentUpon>MangosEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="MangosProvider.cs" />
-    <Compile Include="Models\Bases\GameObjectData.cs" />
-    <Compile Include="Models\Bases\GameObjectType.cs" />
-    <Compile Include="Models\Item.cs" />
-    <Compile Include="Models\GameObject.cs" />
-    <Compile Include="Models\PageText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -512,12 +505,18 @@
       <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
       <Name>Framework</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MangosModels\MangosModels.csproj">
+      <Project>{f2f2db58-223a-4a4a-a909-91131f8c2380}</Project>
+      <Name>MangosModels</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WowFramework\WowFramework.csproj">
       <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
       <Name>WowFramework</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

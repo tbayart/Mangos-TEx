@@ -1,6 +1,6 @@
-﻿using MangosData.Models.Bases;
+﻿using MangosModels.ModelBase;
 
-namespace MangosData.Models
+namespace MangosModels
 {
     public class PageText : GameObjectData
     {

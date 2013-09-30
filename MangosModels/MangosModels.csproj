@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F74F3D0D-AF9F-4CF4-A108-617A17B0F358}</ProjectGuid>
+    <ProjectGuid>{F2F2DB58-223A-4A4A-A909-91131F8C2380}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WowheadApi</RootNamespace>
-    <AssemblyName>WowheadApi</AssemblyName>
+    <RootNamespace>MangosModels</RootNamespace>
+    <AssemblyName>MangosModels</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,28 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Grabbers\IGrabber.cs" />
-    <Compile Include="Grabbers\ItemGrabber.cs" />
-    <Compile Include="Grabbers\GameObjectGrabber.cs" />
-    <Compile Include="Models\Base\GameObjectData.cs" />
-    <Compile Include="Models\Item.cs" />
+    <Compile Include="DataTypes\GameObjectType.cs" />
+    <Compile Include="ModelBase\GameObjectData.cs" />
     <Compile Include="Models\GameObject.cs" />
-    <Compile Include="Models\BookPage.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\PageText.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WowheadClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.csproj">
       <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
       <Name>Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
-      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
-      <Name>WowFramework</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,6 +9,33 @@
                     <Setter Property="ToolTip"
                             Value="{Binding Error}" />
                 </Style>
+                <Style TargetType="DataGridCellsPresenter">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridCellsPresenter">
+                                <DockPanel LastChildFill="True">
+                                    <ItemsPresenter DockPanel.Dock="Top" />
+                                    <Grid Width="{TemplateBinding ActualWidth}">
+                                        <ItemsControl ItemsSource="{Binding RelatedData}"
+                                                      Margin="25,0,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <GroupBox>
+                                                        <GroupBox.Header>
+                                                            <TextBlock Text="{Binding Id, StringFormat={}Page {0}}" />
+                                                        </GroupBox.Header>
+                                                        <TextBox Text="{Binding Text}"
+                                                                 TextWrapping="Wrap" />
+                                                    </GroupBox>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
             </DataGrid.Resources>
 
             <DataGrid.Columns>

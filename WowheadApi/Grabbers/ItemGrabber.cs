@@ -6,7 +6,7 @@ using WowheadApi.Models;
 
 namespace WowheadApi.Grabbers
 {
-    public class ItemGrabber
+    public class ItemGrabber : IGrabber<Item>
     {
         #region Fields
         private static string _idTagFormat = "_[{0}]";
@@ -63,80 +63,77 @@ namespace WowheadApi.Grabbers
 
             return value.Trim();
         }
+        #endregion Methods
 
+        #region IGrabber
         public Item Extract(string data, int id)
         {
-            var result = new Item { Id = id };
-            try
+            if (string.IsNullOrEmpty(data))
+                throw new Exception("Item not found");
+
+            // looking for tooltip part
+            string token = string.Format(_idTagFormat, id);
+            int start = data.IndexOf(token + _ttTag);
+            start = data.IndexOf("<", start);
+            int end = data.IndexOf(token, start);
+            data = data.Substring(start, end - start).Trim(_trimTokens);
+            // tooltip can have multiple roots, we embed it between <body> tag
+            data = string.Format("<body>{0}</body>", data).Replace("&nbsp;", " ");
+
+            // the list of extracted values
+            string[] extracted = new string[2];
+            // reader for tooltip data
+            using (var sr = new StringReader(data))
             {
-                // looking for tooltip part
-                string token = string.Format(_idTagFormat, id);
-                int start = data.IndexOf(token + _ttTag);
-                start = data.IndexOf("<", start);
-                int end = data.IndexOf(token, start);
-                data = data.Substring(start, end - start).Trim(_trimTokens);
-                // tooltip can have multiple roots, we embed it between <body> tag
-                data = string.Format("<body>{0}</body>", data).Replace("&nbsp;", " ");
-
-                if (string.IsNullOrEmpty(data))
-                    throw new Exception("Item not found");
-
-                // the list of extracted values
-                string[] extracted = new string[2];
-                // reader for tooltip data
-                using (var sr = new StringReader(data))
+                using (var reader = XmlReader.Create(sr))
                 {
-                    using (var reader = XmlReader.Create(sr))
+                    int index = 0;
+                    string getValueEndElement = null;
+                    while (reader.Read() && index < extracted.Length)
                     {
-                        int index = 0;
-                        string getValueEndElement = null;
-                        while (reader.Read() && index < extracted.Length)
+                        switch (reader.NodeType)
                         {
-                            switch (reader.NodeType)
-                            {
-                                case XmlNodeType.Element:
+                            case XmlNodeType.Element:
+                                {
+                                    string c = reader.GetAttribute("class");
+                                    if (string.IsNullOrEmpty(c) == false && c[0] == 'q')
                                     {
-                                        string c = reader.GetAttribute("class");
-                                        if (string.IsNullOrEmpty(c) == false && c[0] == 'q')
-                                        {
+                                        extracted[index] = string.Empty;
+                                        getValueEndElement = reader.Name;
+                                    }
+                                    else if (string.IsNullOrEmpty(getValueEndElement) == false)
+                                    {
+                                        if (reader.Name != "small")
                                             extracted[index] = string.Empty;
-                                            getValueEndElement = reader.Name;
-                                        }
-                                        else if (string.IsNullOrEmpty(getValueEndElement) == false)
-                                        {
-                                            if (reader.Name != "small")
-                                                extracted[index] = string.Empty;
-                                        }
-                                    } break;
-                                case XmlNodeType.Text:
-                                    if (string.IsNullOrEmpty(getValueEndElement) == false)
-                                    {
-                                        extracted[index] += reader.Value;
                                     }
-                                    break;
-                                case XmlNodeType.EndElement:
-                                    if (reader.Name == getValueEndElement
-                                    && string.IsNullOrEmpty(extracted[index]) == false)
-                                    {
-                                        getValueEndElement = null;
-                                        extracted[index] = extracted[index].Trim(_trimLabel).Replace("\\'", "'").Trim();
-                                        ++index;
-                                    }
-                                    break;
-                            }
+                                } break;
+                            case XmlNodeType.Text:
+                                if (string.IsNullOrEmpty(getValueEndElement) == false)
+                                {
+                                    extracted[index] += reader.Value;
+                                }
+                                break;
+                            case XmlNodeType.EndElement:
+                                if (reader.Name == getValueEndElement
+                                && string.IsNullOrEmpty(extracted[index]) == false)
+                                {
+                                    getValueEndElement = null;
+                                    extracted[index] = extracted[index].Trim(_trimLabel).Replace("\\'", "'").Trim();
+                                    ++index;
+                                }
+                                break;
                         }
                     }
                 }
+            }
 
-                result.Name = extracted[0];
-                result.Description = Cleanup(extracted[1]);
-            }
-            catch (Exception ex)
+            return new Item
             {
-                result.Error = ex.Message;
-            }
-            return result;
+                Id = id,
+                Name = extracted[0],
+                Description = Cleanup(extracted[1]),
+            };
         }
-        #endregion Methods
+        #endregion IGrabber
     }
 }

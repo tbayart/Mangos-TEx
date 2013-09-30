@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debug\PerformanceChecker.cs" />
     <Compile Include="Event\EventArgs.cs" />
     <Compile Include="Helpers\IListHelpers.cs" />
     <Compile Include="MVVM\BaseViewModel.cs" />

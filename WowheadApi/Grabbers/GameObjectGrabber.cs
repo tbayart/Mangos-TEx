@@ -7,7 +7,7 @@ using WowheadApi.Models;
 
 namespace WowheadApi.Grabbers
 {
-    public class GameObjectGrabber
+    public class GameObjectGrabber : IGrabber<GameObject>
     {
         #region Fields
         private static string _idTagFormat = "g_objects[{0}]";
@@ -19,47 +19,41 @@ namespace WowheadApi.Grabbers
         }
         #endregion Ctor
 
-        #region Methods
+        #region IGrabber
         public GameObject Extract(string data, int id)
         {
+            if (string.IsNullOrEmpty(data))
+                throw new Exception("GameObject not found");
+
+            // looking for id part
+            string token = string.Format(_idTagFormat, id);
+            int start = data.IndexOf(token);
+            start = data.IndexOf("{", start);
+            int end = data.IndexOf("}", start) + 1;
+            string dataTooltip = data.Substring(start, end - start);
+
+            // instanciate GameObject
             GameObject result = new GameObject { Id = id };
-            try
+            // parse data
+            JObject obj = JObject.Parse(dataTooltip);
+            // extract name
+            result.Name = obj["name"].Value<string>();
+
+            // look for book pages
+            start = data.IndexOf("new Book");
+            if (start > 0)
             {
-                // looking for id part
-                string token = string.Format(_idTagFormat, id);
-                int start = data.IndexOf(token);
                 start = data.IndexOf("{", start);
-                int end = data.IndexOf("}", start) + 1;
-                data = data.Substring(start, end - start);
-
-                if (string.IsNullOrEmpty(data))
-                    throw new Exception("GameObject not found");
-
-                JObject obj = JObject.Parse(data);
-                foreach (var entry in obj)
-                {
-                    switch (entry.Key)
-                    {
-                        case "name":
-                            result.Name = ((JValue)entry.Value).Value<string>();
-                            break;
-                        case "type":
-                            {
-                                if (((JValue)entry.Value).Value<int>() == 9)
-                                    result.Type = "Book";
-                            } break;
-                    }
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                result.Error = ex.Message;
+                end = data.IndexOf("}", start) + 1;
+                string dataBook = data.Substring(start, end - start);
+                obj = JObject.Parse(dataBook);
+                result.RelatedData = obj["pages"].Values()
+                    .Select(o => new BookPage { Text = o.Value<string>() })
+                    .ToList();
             }
 
             return result;
         }
-        #endregion Methods
+        #endregion IGrabber
     }
 }

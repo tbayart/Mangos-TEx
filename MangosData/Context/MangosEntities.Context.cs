@@ -13,7 +13,7 @@ namespace MangosData.Context
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    internal partial class MangosEntities : DbContext
+    public partial class MangosEntities : DbContext
     {
         public MangosEntities()
             : base("name=MangosEntities")
