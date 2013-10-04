@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:MangosTEx.ViewModels">
     <ControlTemplate x:Key="GameObjectsGridTemplate">
         <DataGrid ItemsSource="{Binding GameObjects}"
                   AutoGenerateColumns="False"
@@ -87,7 +88,6 @@
             </TextBlock>
         </StackPanel>
     </ControlTemplate>
-
     <Style x:Key="GameObjectsGridStyle"
            TargetType="Control">
         <Style.Triggers>
@@ -103,4 +103,8 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <DataTemplate DataType="{x:Type vm:GameObjectLocalizationViewModel}">
+        <Control Style="{StaticResource GameObjectsGridStyle}" />
+    </DataTemplate>
 </ResourceDictionary>

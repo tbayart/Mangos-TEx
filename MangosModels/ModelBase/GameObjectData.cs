@@ -2,7 +2,7 @@
 
 namespace MangosModels.ModelBase
 {
-    public abstract class GameObjectData : NotificationObject
+    public abstract class GameObjectData : ObservableObject
     {
     }
 }

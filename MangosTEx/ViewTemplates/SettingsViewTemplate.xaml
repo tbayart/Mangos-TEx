@@ -1,0 +1,120 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+                    xmlns:bhv="http://Framework/Behaviors"
+                    xmlns:ext="http://Framework/MarkupExtensions"
+                    xmlns:vm="clr-namespace:MangosTEx.ViewModels"
+                    xmlns:mod="clr-namespace:MangosTEx.Models">
+    <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+        <DataTemplate.Resources>
+            <Style TargetType="GroupBox">
+                <Setter Property="DockPanel.Dock" Value="Top" />
+                <Setter Property="Margin" Value="5,2" />
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Margin" Value="5,2" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Grid.Column" Value="0" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="5,2" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Grid.Column" Value="1" />
+            </Style>
+            <Style TargetType="PasswordBox">
+                <Setter Property="Margin" Value="5,2" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="Grid.Column" Value="1" />
+            </Style>
+        </DataTemplate.Resources>
+
+        <DockPanel LastChildFill="False"
+                   MinWidth="300">
+            <GroupBox DockPanel.Dock="Top"
+                      Header="Database access"
+                      Margin="5,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Database address" />
+                    <TextBox Grid.Row="0"
+                             Text="{Binding DatabaseHost,
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1"
+                               Text="Mangos database name" />
+                    <TextBox Grid.Row="1"
+                             Text="{Binding DatabaseName,
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </GroupBox>
+            <GroupBox DockPanel.Dock="Top"
+                      Margin="5,0">
+                <GroupBox.Header>
+                    <CheckBox Content="Use proxy for internet access"
+                              IsChecked="{Binding UseProxy}"
+                              IsEnabled="True" />
+                </GroupBox.Header>
+                <Grid IsEnabled="{Binding UseProxy}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Host" />
+                    <TextBox Grid.Row="0"
+                             Text="{Binding ProxyAddress,
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1"
+                               Text="Port" />
+                    <TextBox Grid.Row="1"
+                             Text="{Binding ProxyPort,
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                    <ComboBox Grid.Row="2" Grid.ColumnSpan="2"
+                              ItemsSource="{ext:EnumValues {x:Type mod:ProxyAuthEnum}}"
+                              SelectedValue="{Binding ProxyAuth}"
+                              Margin="5,0" />
+                    <TextBlock Grid.Row="3"
+                               Text="Username" />
+                    <TextBox Grid.Row="3"
+                             Text="{Binding ProxyUsername,
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="4"
+                               Text="Password" />
+                    <!--ProxyPassword-->
+                    <PasswordBox Grid.Row="4" Grid.Column="1">
+                        <i:Interaction.Behaviors>
+                            <bhv:PasswordBoxBinder SecurePassword="{Binding ProxyPassword}" />
+                        </i:Interaction.Behaviors>
+                    </PasswordBox>
+                </Grid>
+            </GroupBox>
+            <Grid DockPanel.Dock="Top"
+                  Margin="5">
+                <Button Content="Cancel"
+                        IsCancel="True"
+                        HorizontalAlignment="Left" />
+                <Button Content="Save"
+                        IsDefault="True"
+                        HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}" />
+            </Grid>
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>

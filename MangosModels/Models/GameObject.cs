@@ -5,7 +5,7 @@ using MangosModels.ModelBase;
 
 namespace MangosModels
 {
-    public class GameObject : NotificationObject
+    public class GameObject : ObservableObject
     {
         public int Id
         {

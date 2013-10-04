@@ -8,9 +8,9 @@ using System.Windows;
 [assembly: AssemblyTitle("MangosTEx")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("tbayart")]
 [assembly: AssemblyProduct("MangosTEx")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright © tbayart 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

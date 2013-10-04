@@ -14,7 +14,7 @@ namespace WowApi
     /// <summary>
     /// Client class to make a request to WoW API
     /// </summary>
-    public class WowApiClient : NotificationObject
+    public class WowApiClient : ObservableObject
     {
         #region Fields
         /// <summary>

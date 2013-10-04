@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("WowApi")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Elior DATA")]
+[assembly: AssemblyCompany("tbayart")]
 [assembly: AssemblyProduct("WowApi")]
-[assembly: AssemblyCopyright("Copyright © Elior DATA 2013")]
+[assembly: AssemblyCopyright("Copyright © tbayart 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

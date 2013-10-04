@@ -4,18 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-		xmlns:viewModels="clr-namespace:MangosTEx.ViewModels"
+		xmlns:vm="clr-namespace:MangosTEx.ViewModels"
         Title="Sample App"
         WindowStartupLocation="CenterScreen"
-        Width="800"
-        Height="600"
-        >
+        Width="800" Height="600">
     <Window.Resources>
-        <viewModels:MainWindowViewModel x:Key="ViewModel" />
+        <vm:MainWindowViewModel x:Key="ViewModel" />
     </Window.Resources>
 
-    <Grid DataContext="{StaticResource ViewModel}">
-        <!--<Control Style="{StaticResource ItemsGridStyle}" />-->
-        <Control Style="{StaticResource GameObjectsGridStyle}" />
-    </Grid>
+    <DockPanel DataContext="{StaticResource ViewModel}"
+               LastChildFill="True">
+        <DockPanel DockPanel.Dock="Top"
+                   LastChildFill="False">
+            <Button DockPanel.Dock="Right"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Content="Settings"
+                    Command="{Binding OpenSettingsCommand}" />
+        </DockPanel>
+        <TabControl ItemsSource="{Binding TabList}"
+                    SelectedItem="{Binding CurrentTab}">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding DataContext.DataViewModel,
+                                              RelativeSource={RelativeSource AncestorType=TabControl}}" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </DockPanel>
 </Window>

@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:MangosTEx.ViewModels">
     <ControlTemplate x:Key="ItemsGridTemplate">
         <DataGrid ItemsSource="{Binding Items}"
                   AutoGenerateColumns="False"
@@ -67,4 +68,8 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <DataTemplate DataType="{x:Type vm:ItemLocalizationViewModel}">
+        <Control Style="{StaticResource ItemsGridStyle}" />
+    </DataTemplate>
 </ResourceDictionary>

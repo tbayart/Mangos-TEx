@@ -1,7 +1,8 @@
 ﻿<Application x:Class="MangosTEx.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Views\MainWindow.xaml">
+             ShutdownMode="OnMainWindowClose"
+             DispatcherUnhandledException="OnDispatcherUnhandledException">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,6 +13,7 @@
                 <ResourceDictionary Source="Resources/StylesRD.xaml" />
                 <ResourceDictionary Source="Resources/ItemsStylesRD.xaml" />
                 <ResourceDictionary Source="Resources/GameObjectsStylesRD.xaml" />
+                <ResourceDictionary Source="ViewTemplates/SettingsViewTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

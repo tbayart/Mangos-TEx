@@ -2,7 +2,7 @@
 
 namespace MangosModels
 {
-    public class Item : NotificationObject
+    public class Item : ObservableObject
     {
         public int Id
         {

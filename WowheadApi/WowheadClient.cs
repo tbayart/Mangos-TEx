@@ -15,7 +15,7 @@ using WowheadApi.Models;
 
 namespace WowheadApi
 {
-    public class WowheadClient : NotificationObject
+    public class WowheadClient : ObservableObject
     {
         // itemset   :              http://www.wowhead.com/itemset=1196
         // event     :              http://www.wowhead.com/event=181

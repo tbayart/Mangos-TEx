@@ -33,6 +33,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,13 +43,23 @@
   <ItemGroup>
     <Compile Include="Debug\PerformanceChecker.cs" />
     <Compile Include="Event\EventArgs.cs" />
+    <Compile Include="Helpers\CryptoHelper.cs" />
+    <Compile Include="Helpers\DebugHelper.cs" />
+    <Compile Include="Helpers\ICommandHelpers.cs" />
     <Compile Include="Helpers\IListHelpers.cs" />
-    <Compile Include="MVVM\BaseViewModel.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="InstanceProvider\InstanceProviderBase.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\ServiceProvider.cs" />
+    <Compile Include="ViewModels\IViewModel.cs" />
+    <Compile Include="ViewModels\ObservableViewModel.cs" />
     <Compile Include="Commands\CommandsBase.cs" />
     <Compile Include="Commands\DelegateCommand.cs" />
-    <Compile Include="MVVM\NotificationObject.cs" />
+    <Compile Include="MVVM\ObservableObject.cs" />
     <Compile Include="Helpers\RandomHelpers.cs" />
     <Compile Include="Helpers\WebRequestHelpers.cs" />
+    <Compile Include="ViewModels\ViewModelProvider.cs" />
+    <Compile Include="InstanceProvider\ViewModelProviderException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Random\PerlinNoise.cs" />
     <Compile Include="Random\SimplexNoise.cs" />

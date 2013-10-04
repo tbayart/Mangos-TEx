@@ -17,16 +17,12 @@ using WowheadApi;
 using System.Reactive.Linq;
 using MangosTEx.Events;
 using Framework.Debug;
+using Framework.Services;
 
 namespace MangosTEx.ViewModels
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainWindowViewModel : ObservableViewModel
     {
-        #region EventHandlers
-        private event EventHandler<LocaleItemEventArgs> UpdateItemLocaleEvent;
-        private event EventHandler<LocaleGameObjectEventArgs> UpdateGameObjectLocaleEvent;
-        #endregion EventHandlers
-
         #region Ctor
         public MainWindowViewModel()
         {
@@ -45,10 +41,8 @@ namespace MangosTEx.ViewModels
             //WowheadApi.Models.GameObject obj1 = grabber.GetGameObject(3714);
             //WowheadApi.Models.GameObject obj2 = grabber.GetGameObject(191656);
 
-            // loading items
-            //LoadItems();
-            // loading game objects
-            LoadGameObjects();
+            SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
+            settings.ApplySettings();
         }
         #endregion Ctor
 
@@ -64,147 +58,62 @@ namespace MangosTEx.ViewModels
         }
         private CultureInfo[] _locales;
 
-        public IEnumerable<MangosModels.Item> Items
-        {
-            get { return _items; }
-            private set
-            {
-                _items = value;
-                RaisePropertyChanged(() => Items);
-            }
-        }
-        private IEnumerable<MangosModels.Item> _items;
+        public IEnumerable<string> TabList { get { return _tabList; } }
+        public List<string> _tabList = new List<string> { "Home", "Items", "Game objects" };
 
-        public IEnumerable<MangosModels.GameObject> GameObjects
+        public string CurrentTab
         {
-            get { return _gameObjects; }
-            private set
+            get { return _currentTab; }
+            set
             {
-                _gameObjects = value;
-                RaisePropertyChanged(() => GameObjects);
+                _currentTab = value;
+                RaisePropertyChanged(() => CurrentTab);
             }
         }
-        private IEnumerable<MangosModels.GameObject> _gameObjects;
+        private string _currentTab;
+
+        public IViewModel DataViewModel
+        {
+            get { return _dataViewModel; }
+            private set
+            {
+                _dataViewModel = value;
+                RaisePropertyChanged(() => DataViewModel);
+            }
+        }
+        private IViewModel _dataViewModel;
         #endregion Properties
 
         #region Methods
-        private void OnError(Exception ex)
+        protected override void OnPropertyChanged(string propertyName)
         {
-            throw ex;
+            base.OnPropertyChanged(propertyName);
+
+            if (propertyName == GetPropertyName(() => CurrentTab))
+            {
+                if (CurrentTab == "Items")
+                    DataViewModel = ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
+                else if(CurrentTab == "Game Objects")
+                    DataViewModel = ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();
+                else
+                    DataViewModel = null;
+            }
         }
         #endregion Methods
 
-        #region Items Test Methods
-        private void LoadItems()
-        {
-            Observable.Start(() =>
-                {
-                    // load a bunch of items from database
-                    var provider = new MangosDataProvider.MangosProvider();
-                    return provider.GetItems()
-                        .Where(o => o.Id >= 900 && o.Id < 1000)
-                        .AsEnumerable();
-                })
-                .ObserveOnDispatcher()
-                .Subscribe(result =>
-                {
-                    Items = result;
-                    UpdateItemLocaleEvent += OnUpdateItemLocale;
-                    Task.Factory.StartNew(() => GetItemsLocales(result));
-                }, OnError);
-        }
-
-        private void GetItemsLocales(IEnumerable<MangosModels.Item> items)
-        {
-            Parallel.ForEach(items, item =>
-            {
-                var grabber = new WowheadClient(CultureInfo.GetCultureInfo("zh-TW"));
-                try
-                {
-                    WowheadApi.Models.Item loc = grabber.GetItem(item.Id);
-                    UpdateItemLocaleEvent.Invoke(this, new LocaleItemEventArgs(loc));
-                }
-                catch { }
-            });
-            UpdateItemLocaleEvent -= OnUpdateItemLocale;
-        }
-
-        private void OnUpdateItemLocale(object sender, LocaleItemEventArgs e)
-        {
-            if (e.Arg == null)
-                return;
-
-            var item = Items.FirstOrDefault(o => o.Id == e.Arg.Id);
-            if (item != null)
-            {
-                item.LocalizedName = e.Arg.Name;
-                item.LocalizedDescription = e.Arg.Description;
-                //item.Error = e.Arg.Error;
-            }
-        }
-        #endregion Items Test Methods
-
-        #region GameObjects Test Methods
-        private void LoadGameObjects()
-        {
-            Observable.Start(() =>
-                {
-                    int minId = 0;
-                    // load a bunch of objects from database
-                    var provider = new MangosDataProvider.MangosProvider();
-                    return provider.GetGameObjects()
-                        .Where(o => o.Type == (int)MangosModels.DataTypes.GameObjectType.TEXT)
-                        //.Where(o => o.Id > minId)
-                        .Take(150)
-                        .ToList();
-                })
-                .ObserveOnDispatcher()
-                .Subscribe(result =>
-                {
-                    GameObjects = result;
-                    UpdateGameObjectLocaleEvent += OnUpdateGameObjectLocale;
-                    Task.Factory.StartNew(() => GetGameObjectsLocales(result));
-                }, OnError);
-        }
-
-        private void GetGameObjectsLocales(IEnumerable<MangosModels.GameObject> gameObjects)
-        {
-            Parallel.ForEach(gameObjects, go =>
-            {
-                var grabber = new WowheadClient(CultureInfo.CurrentCulture);
-                try
-                {
-                    WowheadApi.Models.GameObject loc = grabber.GetGameObject(go.Id);
-                    UpdateGameObjectLocaleEvent.Invoke(this, new LocaleGameObjectEventArgs(loc));
-                }
-                catch { }
-            });
-            UpdateGameObjectLocaleEvent -= OnUpdateGameObjectLocale;
-        }
-
-        private void OnUpdateGameObjectLocale(object sender, LocaleGameObjectEventArgs e)
-        {
-            if (e.Arg == null)
-                return;
-
-            var go = GameObjects.FirstOrDefault(o => o.Id == e.Arg.Id);
-            if (go != null)
-            {
-                int id = 0;
-                go.LocalizedName = e.Arg.Name;
-                go.RelatedData = e.Arg.RelatedData != null
-                    ? e.Arg.RelatedData
-                        .OfType<WowheadApi.Models.BookPage>()
-                        .Select(o => new MangosModels.PageText { Id = ++id, Text = o.Text })
-                    : null;
-                //go.Error = e.Arg.Error;
-            }
-        }
-        #endregion GameObjects Test Methods
-
         #region Commands
-        private void InitializeCommands()
+        protected override void InitializeCommands()
         {
+            base.InitializeCommands();
+            OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
+        }
+
+        public ICommand OpenSettingsCommand { get; private set; }
+        private void OpenSettingsExecute()
+        {
+            SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
+            ServiceProvider.GetInstance<InteractionService>().ShowContent(settings);
+            settings.ApplySettings();
         }
         #endregion Commands
     }
