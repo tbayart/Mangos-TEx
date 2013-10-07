@@ -4,8 +4,8 @@
                     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                     xmlns:bhv="http://Framework/Behaviors"
                     xmlns:ext="http://Framework/MarkupExtensions"
-                    xmlns:vm="clr-namespace:MangosTEx.ViewModels"
-                    xmlns:mod="clr-namespace:MangosTEx.Models">
+                    xmlns:vm="clr-namespace:MangosTEx.Services.ViewModels"
+                    xmlns:data="clr-namespace:MangosTEx.Services.DataTypes">
     <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
         <DataTemplate.Resources>
             <Style TargetType="GroupBox">
@@ -87,7 +87,7 @@
                              Text="{Binding ProxyPort,
                                     UpdateSourceTrigger=PropertyChanged}" />
                     <ComboBox Grid.Row="2" Grid.ColumnSpan="2"
-                              ItemsSource="{ext:EnumValues {x:Type mod:ProxyAuthEnum}}"
+                              ItemsSource="{ext:EnumValues {x:Type data:ProxyAuthEnum}}"
                               SelectedValue="{Binding ProxyAuth}"
                               Margin="5,0" />
                     <TextBlock Grid.Row="3"

@@ -1,4 +1,4 @@
-﻿namespace MangosTEx.Models
+﻿namespace MangosTEx.Services.DataTypes
 {
     public enum ProxyAuthEnum
     {

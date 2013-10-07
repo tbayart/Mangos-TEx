@@ -25,7 +25,7 @@ namespace MangosTEx.ViewModels
         #endregion Ctor
 
         #region Properties
-        public IEnumerable<MangosModels.Item> Items
+        public IEnumerable<MangosTEx.Services.Models.Item> Items
         {
             get { return _items; }
             private set
@@ -34,7 +34,7 @@ namespace MangosTEx.ViewModels
                 RaisePropertyChanged(() => Items);
             }
         }
-        private IEnumerable<MangosModels.Item> _items;
+        private IEnumerable<MangosTEx.Services.Models.Item> _items;
         #endregion Properties
 
         #region Methods
@@ -43,7 +43,7 @@ namespace MangosTEx.ViewModels
             Observable.Start(() =>
                 {
                     // load a bunch of items from database
-                    var provider = new MangosDataProvider.MangosProvider();
+                    var provider = new MangosTEx.Services.MangosProvider();
                     return provider.GetItems()
                         .Where(o => o.Id >= 900 && o.Id < 1000)
                         .ToList();
@@ -62,7 +62,7 @@ namespace MangosTEx.ViewModels
             throw ex;
         }
 
-        private void GetItemsLocales(IEnumerable<MangosModels.Item> items)
+        private void GetItemsLocales(IEnumerable<MangosTEx.Services.Models.Item> items)
         {
             Parallel.ForEach(items, item =>
             {
@@ -93,8 +93,9 @@ namespace MangosTEx.ViewModels
         #endregion Methods
 
         #region Commands
-        private void InitializeCommands()
+        protected override void InitializeCommands()
         {
+            base.InitializeCommands();
         }
         #endregion Commands
     }

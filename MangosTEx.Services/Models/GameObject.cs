@@ -1,8 +1,11 @@
-﻿using Framework.MVVM;
+﻿using System.Collections.Generic;
+using Framework.MVVM;
+using MangosTEx.Services.DataTypes;
+using MangosTEx.Services.ModelBase;
 
-namespace MangosModels
+namespace MangosTEx.Services.Models
 {
-    public class Item : ObservableObject
+    public class GameObject : ObservableObject
     {
         public int Id
         {
@@ -15,6 +18,19 @@ namespace MangosModels
         }
         private int _id;
 
+        public GameObjectType GameObjectType { get { return (GameObjectType)Type; } }
+        public int Type
+        {
+            get { return _type; }
+            set
+            {
+                _type = value;
+                RaisePropertyChanged(() => Type);
+                RaisePropertyChanged(() => GameObjectType);
+            }
+        }
+        private int _type;
+
         public string Name
         {
             get { return _name; }
@@ -25,17 +41,6 @@ namespace MangosModels
             }
         }
         private string _name;
-
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                _description = value;
-                RaisePropertyChanged(() => Description);
-            }
-        }
-        private string _description;
 
         public string LocalizedName
         {
@@ -48,16 +53,16 @@ namespace MangosModels
         }
         private string _localizedName;
 
-        public string LocalizedDescription
+        public IEnumerable<GameObjectData> RelatedData
         {
-            get { return _localizedDescription; }
+            get { return _relatedData; }
             set
             {
-                _localizedDescription = value;
-                RaisePropertyChanged(() => LocalizedDescription);
+                _relatedData = value;
+                RaisePropertyChanged(() => RelatedData);
             }
         }
-        private string _localizedDescription;
+        private IEnumerable<GameObjectData> _relatedData;
 
         public string Error
         {

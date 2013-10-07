@@ -18,6 +18,8 @@ using System.Reactive.Linq;
 using MangosTEx.Events;
 using Framework.Debug;
 using Framework.Services;
+using MangosTEx.Services.ViewModels;
+using MangosTEx.Models;
 
 namespace MangosTEx.ViewModels
 {
@@ -43,10 +45,22 @@ namespace MangosTEx.ViewModels
 
             SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
             settings.ApplySettings();
+            UpdateConnexionStatusExecute(true);
         }
         #endregion Ctor
 
         #region Properties
+        private ConnectionStatus _connectionStatus;
+        public ConnectionStatus ConnectionStatus
+        {
+            get { return _connectionStatus; }
+            private set
+            {
+                _connectionStatus = value;
+                RaisePropertyChanged(() => ConnectionStatus);
+            }
+        }
+
         public CultureInfo[] Locales
         {
             get { return _locales; }
@@ -93,7 +107,7 @@ namespace MangosTEx.ViewModels
             {
                 if (CurrentTab == "Items")
                     DataViewModel = ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
-                else if(CurrentTab == "Game Objects")
+                else if (CurrentTab == "Game Objects")
                     DataViewModel = ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();
                 else
                     DataViewModel = null;
@@ -105,7 +119,20 @@ namespace MangosTEx.ViewModels
         protected override void InitializeCommands()
         {
             base.InitializeCommands();
+            UpdateConnexionStatusCommand = new DelegateCommand(() => UpdateConnexionStatusExecute());
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
+        }
+
+        public ICommand UpdateConnexionStatusCommand { get; private set; }
+        private void UpdateConnexionStatusExecute(bool forceUpdate = false)
+        {
+            if (ConnectionStatus == null && forceUpdate == false)
+                return;
+
+            ConnectionStatus = null;
+            Observable.Start(() => MangosTEx.Services.MangosProvider.CheckDatabaseAccess())
+                .ObserveOnDispatcher()
+                .Subscribe(result => ConnectionStatus = new ConnectionStatus(result));
         }
 
         public ICommand OpenSettingsCommand { get; private set; }
@@ -113,7 +140,7 @@ namespace MangosTEx.ViewModels
         {
             SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
             ServiceProvider.GetInstance<InteractionService>().ShowContent(settings);
-            settings.ApplySettings();
+            UpdateConnexionStatusCommand.Execute(null);
         }
         #endregion Commands
     }

@@ -25,7 +25,7 @@ namespace MangosTEx.ViewModels
         #endregion Ctor
 
         #region Properties
-        public IEnumerable<MangosModels.GameObject> GameObjects
+        public IEnumerable<MangosTEx.Services.Models.GameObject> GameObjects
         {
             get { return _gameObjects; }
             private set
@@ -34,7 +34,7 @@ namespace MangosTEx.ViewModels
                 RaisePropertyChanged(() => GameObjects);
             }
         }
-        private IEnumerable<MangosModels.GameObject> _gameObjects;
+        private IEnumerable<MangosTEx.Services.Models.GameObject> _gameObjects;
         #endregion Properties
 
         #region Methods
@@ -44,9 +44,9 @@ namespace MangosTEx.ViewModels
                 {
                     int minId = 0;
                     // load a bunch of objects from database
-                    var provider = new MangosDataProvider.MangosProvider();
+                    var provider = new MangosTEx.Services.MangosProvider();
                     return provider.GetGameObjects()
-                        .Where(o => o.Type == (int)MangosModels.DataTypes.GameObjectType.TEXT)
+                        .Where(o => o.Type == (int)MangosTEx.Services.DataTypes.GameObjectType.TEXT)
                         //.Where(o => o.Id > minId)
                         .Take(150)
                         .ToList();
@@ -59,13 +59,13 @@ namespace MangosTEx.ViewModels
                     Task.Factory.StartNew(() => GetGameObjectsLocales(result));
                 }, OnError);
         }
-        
+
         private void OnError(Exception ex)
         {
             throw ex;
         }
 
-        private void GetGameObjectsLocales(IEnumerable<MangosModels.GameObject> gameObjects)
+        private void GetGameObjectsLocales(IEnumerable<MangosTEx.Services.Models.GameObject> gameObjects)
         {
             Parallel.ForEach(gameObjects, go =>
             {
@@ -93,7 +93,7 @@ namespace MangosTEx.ViewModels
                 go.RelatedData = e.Arg.RelatedData != null
                     ? e.Arg.RelatedData
                         .OfType<WowheadApi.Models.BookPage>()
-                        .Select(o => new MangosModels.PageText { Id = ++id, Text = o.Text })
+                        .Select(o => new MangosTEx.Services.Models.PageText { Id = ++id, Text = o.Text })
                     : null;
                 //go.Error = e.Arg.Error;
             }
@@ -101,8 +101,9 @@ namespace MangosTEx.ViewModels
         #endregion Methods
 
         #region Commands
-        private void InitializeCommands()
+        protected override void InitializeCommands()
         {
+            base.InitializeCommands();
         }
         #endregion Commands
     }

@@ -1,4 +1,4 @@
-﻿namespace MangosModels.DataTypes
+﻿namespace MangosTEx.Services.DataTypes
 {
     public enum GameObjectType : int
     {

@@ -84,15 +84,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\ProxyAuthEnum.cs" />
+    <Compile Include="Models\ConnectionStatus.cs" />
     <Compile Include="ViewModels\GameObjectLocalizationViewModel.cs" />
     <Compile Include="ViewModels\ItemLocalizationViewModel.cs" />
-    <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Page Include="Resources\Converters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ViewTemplates\SettingsViewTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -147,21 +142,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -173,13 +159,9 @@
       <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
       <Name>Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MangosDataProvider\MangosDataProvider.csproj">
-      <Project>{d30e7e98-d733-48fa-9d63-5b0850e3b312}</Project>
-      <Name>MangosDataProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MangosModels\MangosModels.csproj">
-      <Project>{f2f2db58-223a-4a4a-a909-91131f8c2380}</Project>
-      <Name>MangosModels</Name>
+    <ProjectReference Include="..\MangosTEx.Services\MangosTEx.Services.csproj">
+      <Project>{c71c5833-ed5c-417a-87c5-5d5f47b21928}</Project>
+      <Name>MangosTEx.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\WowApi\WowApi.csproj">
       <Project>{7aa9d6a2-52e3-421b-b5ed-b7fbae5a6a25}</Project>

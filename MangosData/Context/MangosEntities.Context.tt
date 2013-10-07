@@ -57,7 +57,12 @@ using System.Linq;
 <#=Accessibility.ForType(container)#> partial class <#=code.Escape(container)#> : DbContext
 {
     public <#=code.Escape(container)#>()
-        : base("name=<#=container.Name#>")
+        : this("name=<#=container.Name#>")
+    {
+    }
+
+    public <#=code.Escape(container)#>(string connectionString)
+        : base(connectionString)
     {
 <#
 if (!loader.IsLazyLoadingEnabled(container))

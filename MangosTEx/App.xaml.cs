@@ -26,7 +26,6 @@ namespace MangosTEx
             base.OnStartup(e);
 
             AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;
-
             Application.Current.MainWindow = new MangosTEx.Views.MainWindow();
             Application.Current.MainWindow.Show();
         }

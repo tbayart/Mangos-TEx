@@ -35,11 +35,22 @@ namespace Framework.Services
             var dialog = new Window
             {
                 ResizeMode = ResizeMode.NoResize,
-                ShowInTaskbar = Application.Current.MainWindow == null,
                 SizeToContent = SizeToContent.WidthAndHeight,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = Application.Current.MainWindow,
             };
+
+            if (Application.Current.MainWindow != null
+            && Application.Current.MainWindow.IsLoaded == true)
+            {
+                dialog.Owner = Application.Current.MainWindow;
+                dialog.ShowInTaskbar = false;
+            }
+            else // handle the cases when app crashes before main window is shown
+            {
+                dialog.Owner = null;
+                dialog.ShowInTaskbar = true;
+                Application.Current.MainWindow = dialog;
+            }
 
             BindingOperations.SetBinding(dialog, Window.ContentProperty, new Binding());
             BindingOperations.SetBinding(dialog, Window.TitleProperty, new Binding("DisplayName"));
@@ -52,7 +63,6 @@ namespace Framework.Services
                 dialog.MaxWidth = SystemParameters.WorkArea.Width;
                 dialog.MaxHeight = SystemParameters.WorkArea.Height;
             }
-
             if (content is ICloseable)
             {
                 ((ICloseable)content).CloseCommand = new DelegateCommand(() => dialog.Close());

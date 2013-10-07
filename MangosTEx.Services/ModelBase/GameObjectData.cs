@@ -1,6 +1,6 @@
 ﻿using Framework.MVVM;
 
-namespace MangosModels.ModelBase
+namespace MangosTEx.Services.ModelBase
 {
     public abstract class GameObjectData : ObservableObject
     {

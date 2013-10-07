@@ -1,24 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.Entity;
+using System.Data.EntityClient;
 using System.Globalization;
 using System.Linq;
 using MangosData.Context;
-using MangosModels;
+using MangosTEx.Services.ModelBase;
+using MangosTEx.Services.Models;
+using MySql.Data.MySqlClient;
 
-namespace MangosDataProvider
+namespace MangosTEx.Services
 {
     public class MangosProvider
     {
-        #region Fields
-        private MangosEntities _edm;
-        #endregion Fields
-
         #region Ctor
         public MangosProvider()
         {
-            _edm = new MangosEntities();
         }
         #endregion Ctor
+
+        #region Properties
+        private static Properties.Settings Settings { get { return Properties.Settings.Default; } }
+        #endregion Properties
+
+        #region Helpers
+        private static MangosEntities GetContext(uint timeout = 15)
+        {
+            // retrieve entity ConnectionString from configuration file
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings["MangosEntities"];
+            // parsing entity ConnectionString
+            EntityConnectionStringBuilder entityBuilder = new EntityConnectionStringBuilder(settings.ConnectionString);
+            // using settings to create a ProviderConnectionString for MySql
+            MySqlConnectionStringBuilder mysqlBuilder = new MySqlConnectionStringBuilder();
+            mysqlBuilder.ConnectionTimeout = timeout;
+            mysqlBuilder.Server = Settings.DatabaseHost;
+            mysqlBuilder.Port = Settings.DatabasePort;
+            mysqlBuilder.Database = Settings.DatabaseName;
+            mysqlBuilder.UserID = Settings.DatabaseUsername;
+            mysqlBuilder.Password = Settings.DatabasePassword;
+            // setting up ProviderConnectionString in entity ConnectionString
+            entityBuilder.ProviderConnectionString = mysqlBuilder.ConnectionString;
+            // create the DbContext using ConnectionString
+            return new MangosEntities(entityBuilder.ConnectionString);
+        }
+
+        public static string CheckDatabaseAccess()
+        {
+            try
+            {
+                using (var context = GetContext(1))
+                {
+                    var adapter = (System.Data.Entity.Infrastructure.IObjectContextAdapter)context;
+                    if (adapter.ObjectContext.DatabaseExists() == true)
+                        return string.Empty;
+                    return "Failed to access database " + Settings.DatabaseName;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+        #endregion Helpers
 
         #region Items
         private static Func<item_template, Item> _getItem = o => new Item { Id = o.entry, Name = o.name, Description = o.description };
@@ -37,7 +81,7 @@ namespace MangosDataProvider
 
         public IEnumerable<Item> GetItems()
         {
-            var items = _edm.item_template
+            var items = GetContext().item_template
                 .AsNoTracking()
                 .Select(_getItem);
 
@@ -52,7 +96,7 @@ namespace MangosDataProvider
 
             Func<locales_item, Item> selector = _getLoc[offset];
             var entries = items.Select(o => o.Id).ToList();
-            var locales = _edm.locales_item
+            var locales = GetContext().locales_item
                 .AsNoTracking()
                 //.Where(o => entries.Contains(o.entry))
                 .Select(selector)
@@ -73,7 +117,7 @@ namespace MangosDataProvider
         #region GameObjects
         public IEnumerable<GameObject> GetGameObjects()
         {
-            var gameobjects = _edm.gameobject_template
+            var gameobjects = GetContext().gameobject_template
                 .AsNoTracking()
                 .Select(o => new GameObject { Id = o.entry, Name = o.name, Type = o.type });
 

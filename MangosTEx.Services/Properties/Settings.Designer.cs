@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MangosTEx.Properties {
+namespace MangosTEx.Services.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -37,13 +37,49 @@ namespace MangosTEx.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Mangos")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3306")]
+        public uint DatabasePort {
+            get {
+                return ((uint)(this["DatabasePort"]));
+            }
+            set {
+                this["DatabasePort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("mangos")]
         public string DatabaseName {
             get {
                 return ((string)(this["DatabaseName"]));
             }
             set {
                 this["DatabaseName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("root")]
+        public string DatabaseUsername {
+            get {
+                return ((string)(this["DatabaseUsername"]));
+            }
+            set {
+                this["DatabaseUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DatabasePassword {
+            get {
+                return ((string)(this["DatabasePassword"]));
+            }
+            set {
+                this["DatabasePassword"] = value;
             }
         }
         
@@ -86,9 +122,9 @@ namespace MangosTEx.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("NoAuthentification")]
-        public global::MangosTEx.Models.ProxyAuthEnum ProxyAuth {
+        public global::MangosTEx.Services.DataTypes.ProxyAuthEnum ProxyAuth {
             get {
-                return ((global::MangosTEx.Models.ProxyAuthEnum)(this["ProxyAuth"]));
+                return ((global::MangosTEx.Services.DataTypes.ProxyAuthEnum)(this["ProxyAuth"]));
             }
             set {
                 this["ProxyAuth"] = value;

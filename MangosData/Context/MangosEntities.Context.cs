@@ -16,7 +16,12 @@ namespace MangosData.Context
     public partial class MangosEntities : DbContext
     {
         public MangosEntities()
-            : base("name=MangosEntities")
+            : this("name=MangosEntities")
+        {
+        }
+    
+        public MangosEntities(string connectionString)
+            : base(connectionString)
         {
         }
     

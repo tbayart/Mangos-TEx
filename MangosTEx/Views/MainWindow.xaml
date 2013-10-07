@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
 		xmlns:vm="clr-namespace:MangosTEx.ViewModels"
         Title="Sample App"
@@ -16,6 +17,37 @@
                LastChildFill="True">
         <DockPanel DockPanel.Dock="Top"
                    LastChildFill="False">
+            <TextBlock DockPanel.Dock="Left"
+                       Text="Database status : "
+                       ToolTip="Click to update">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding UpdateConnexionStatusCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
+            <Ellipse DockPanel.Dock="Left"
+                     DataContext="{Binding ConnectionStatus}"
+                     Width="16"
+                     Height="16"
+                     ToolTip="{Binding ErrorMessage}">
+                <Ellipse.Style>
+                    <Style TargetType="Ellipse">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                <Setter Property="Fill" Value="Orange" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StatusOk}" Value="True">
+                                <Setter Property="Fill" Value="DarkGreen" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StatusOk}" Value="False">
+                                <Setter Property="Fill" Value="Red" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Ellipse.Style>
+            </Ellipse>
+
             <Button DockPanel.Dock="Right"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"

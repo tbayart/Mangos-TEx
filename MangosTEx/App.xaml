@@ -13,7 +13,7 @@
                 <ResourceDictionary Source="Resources/StylesRD.xaml" />
                 <ResourceDictionary Source="Resources/ItemsStylesRD.xaml" />
                 <ResourceDictionary Source="Resources/GameObjectsStylesRD.xaml" />
-                <ResourceDictionary Source="ViewTemplates/SettingsViewTemplate.xaml" />
+                <ResourceDictionary Source="/MangosTEx.Services;component/ViewTemplates/SettingsViewTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

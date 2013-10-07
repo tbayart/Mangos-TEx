@@ -2,13 +2,13 @@
 using System.Security;
 using System.Security.Cryptography;
 using System.Windows.Input;
+using MangosTEx.Services.DataTypes;
 using Framework.Commands;
 using Framework.Helpers;
 using Framework.MVVM;
 using Framework.Services.Interfaces;
-using MangosTEx.Models;
 
-namespace MangosTEx.ViewModels
+namespace MangosTEx.Services.ViewModels
 {
     public class SettingsViewModel : ObservableViewModel, ICloseable
     {
@@ -107,6 +107,8 @@ namespace MangosTEx.ViewModels
             }
         }
         private SecureString _proxyPassword;
+
+        private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
         #region Methods
@@ -121,7 +123,7 @@ namespace MangosTEx.ViewModels
             if (Properties.Settings.Default.UseProxy == true)
             {
                 proxy = new System.Net.WebProxy(Properties.Settings.Default.ProxyAddress, Properties.Settings.Default.ProxyPort);
-                switch (Properties.Settings.Default.ProxyAuth)
+                switch (Settings.ProxyAuth)
                 {
                     case ProxyAuthEnum.DefaultAuthentification:
                         proxy.UseDefaultCredentials = true;
@@ -139,27 +141,27 @@ namespace MangosTEx.ViewModels
 
         private void LoadApplicationSettings()
         {
-            DatabaseHost = Properties.Settings.Default.DatabaseHost;
-            DatabaseName = Properties.Settings.Default.DatabaseName;
-            UseProxy = Properties.Settings.Default.UseProxy;
-            ProxyAddress = Properties.Settings.Default.ProxyAddress;
-            ProxyPort = Properties.Settings.Default.ProxyPort;
-            ProxyAuth = Properties.Settings.Default.ProxyAuth;
-            ProxyUsername = Properties.Settings.Default.ProxyUsername;
+            DatabaseHost = Settings.DatabaseHost;
+            DatabaseName = Settings.DatabaseName;
+            UseProxy = Settings.UseProxy;
+            ProxyAddress = Settings.ProxyAddress;
+            ProxyPort = Settings.ProxyPort;
+            ProxyAuth = Settings.ProxyAuth;
+            ProxyUsername = Settings.ProxyUsername;
             ProxyPassword = GetProxyPassword();
         }
 
         private void SaveApplicationSettings()
         {
-            Properties.Settings.Default.DatabaseHost = DatabaseHost;
-            Properties.Settings.Default.DatabaseName = DatabaseName;
-            Properties.Settings.Default.UseProxy = UseProxy;
-            Properties.Settings.Default.ProxyAddress = ProxyAddress;
-            Properties.Settings.Default.ProxyPort = ProxyPort;
-            Properties.Settings.Default.ProxyAuth = ProxyAuth;
-            Properties.Settings.Default.ProxyUsername = ProxyUsername;
-            Properties.Settings.Default.ProxyPassword = GetAlgorithm().CreateEncryptor().Encrypt(ProxyPassword);
-            Properties.Settings.Default.Save();
+            Settings.DatabaseHost = DatabaseHost;
+            Settings.DatabaseName = DatabaseName;
+            Settings.UseProxy = UseProxy;
+            Settings.ProxyAddress = ProxyAddress;
+            Settings.ProxyPort = ProxyPort;
+            Settings.ProxyAuth = ProxyAuth;
+            Settings.ProxyUsername = ProxyUsername;
+            Settings.ProxyPassword = GetAlgorithm().CreateEncryptor().Encrypt(ProxyPassword);
+            Settings.Save();
         }
 
         private SymmetricAlgorithm GetAlgorithm()
@@ -183,6 +185,7 @@ namespace MangosTEx.ViewModels
         {
             SaveApplicationSettings();
             CloseCommand.Execute(null);
+            ApplySettings();
         }
 
         private bool SaveCanExecute()
