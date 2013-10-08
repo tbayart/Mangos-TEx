@@ -19,7 +19,6 @@ using MangosTEx.Events;
 using Framework.Debug;
 using Framework.Services;
 using MangosTEx.Services.ViewModels;
-using MangosTEx.Models;
 
 namespace MangosTEx.ViewModels
 {
@@ -43,15 +42,14 @@ namespace MangosTEx.ViewModels
             //WowheadApi.Models.GameObject obj1 = grabber.GetGameObject(3714);
             //WowheadApi.Models.GameObject obj2 = grabber.GetGameObject(191656);
 
-            SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
-            settings.ApplySettings();
+            SettingsViewModel.ApplyProxySettings();
             UpdateConnexionStatusExecute(true);
         }
         #endregion Ctor
 
         #region Properties
-        private ConnectionStatus _connectionStatus;
-        public ConnectionStatus ConnectionStatus
+        private MangosTEx.Services.Models.ConnectionStatus _connectionStatus;
+        public MangosTEx.Services.Models.ConnectionStatus ConnectionStatus
         {
             get { return _connectionStatus; }
             private set
@@ -132,7 +130,7 @@ namespace MangosTEx.ViewModels
             ConnectionStatus = null;
             Observable.Start(() => MangosTEx.Services.MangosProvider.CheckDatabaseAccess())
                 .ObserveOnDispatcher()
-                .Subscribe(result => ConnectionStatus = new ConnectionStatus(result));
+                .Subscribe(result => ConnectionStatus = result);
         }
 
         public ICommand OpenSettingsCommand { get; private set; }

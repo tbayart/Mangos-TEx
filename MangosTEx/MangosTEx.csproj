@@ -84,13 +84,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\ConnectionStatus.cs" />
     <Compile Include="ViewModels\GameObjectLocalizationViewModel.cs" />
     <Compile Include="ViewModels\ItemLocalizationViewModel.cs" />
-    <Page Include="Resources\Converters.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Resources\StoryboardsRD.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -123,8 +118,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Converters\IsNullConverter.cs" />
-    <Compile Include="Converters\IsBiggerThanConverter.cs" />
     <Compile Include="Events\GameObjectEvent.cs" />
     <Compile Include="Events\LocalizedEvent.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -175,6 +168,10 @@
       <Project>{f74f3d0d-af9f-4cf4-a108-617a17b0f358}</Project>
       <Name>WowheadApi</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Converters\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

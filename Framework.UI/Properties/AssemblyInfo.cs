@@ -58,6 +58,7 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://Framework", "Framework")]
 [assembly: XmlnsDefinition("http://Framework/Behaviors", "Framework.Behaviors")]
 [assembly: XmlnsDefinition("http://Framework/Commands", "Framework.Commands")]
+[assembly: XmlnsDefinition("http://Framework/Converters", "Framework.Converters")]
 [assembly: XmlnsDefinition("http://Framework/Debug", "Framework.Debug")]
 [assembly: XmlnsDefinition("http://Framework/Interactivity", "Framework.Interactivity")]
 [assembly: XmlnsDefinition("http://Framework/MarkupExtensions", "Framework.MarkupExtensions")]

@@ -60,5 +60,20 @@ namespace Framework.Helpers
                 return result;
             }
         }
+
+        public static string DecryptClear(this ICryptoTransform crypto, string toDecrypt)
+        {
+            using (crypto)
+            using (MemoryStream memStream = new MemoryStream())
+            using (CryptoStream crypStream = new CryptoStream(memStream, crypto, CryptoStreamMode.Write))
+            {
+                var buffer = Convert.FromBase64String(toDecrypt);
+                crypStream.Write(buffer, 0, buffer.Length);
+                crypStream.FlushFinalBlock();
+                memStream.Seek(0, SeekOrigin.Begin);
+                using (StreamReader sr = new StreamReader(memStream))
+                    return sr.ReadToEnd();
+            }
+        }
     }
 }

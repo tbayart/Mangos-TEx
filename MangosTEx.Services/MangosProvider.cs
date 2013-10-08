@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Entity;
 using System.Data.EntityClient;
 using System.Globalization;
 using System.Linq;
+using System.Security;
+using System.Security.Cryptography;
+using Framework.Helpers;
 using MangosData.Context;
-using MangosTEx.Services.ModelBase;
 using MangosTEx.Services.Models;
 using MySql.Data.MySqlClient;
 
@@ -24,7 +25,43 @@ namespace MangosTEx.Services
         private static Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
-        #region Helpers
+        #region Static Methods
+        public static ConnectionStatus CheckDatabaseAccess()
+        {
+            try
+            {
+                using (var context = GetContext(3))
+                {
+                    var adapter = (System.Data.Entity.Infrastructure.IObjectContextAdapter)context;
+                    if (adapter.ObjectContext.DatabaseExists() == false)
+                        return new ConnectionStatus(false, "Failed to access database " + Settings.DatabaseName);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ConnectionStatus(false, ex.Message);
+            }
+            return new ConnectionStatus(true, "Connection OK");
+        }
+
+        public static SecureString Decrypt(string data)
+        {
+            using (var algo = GetAlgorithm())
+            {
+                var result = algo.CreateDecryptor().Decrypt(data);
+                return result;
+            }
+        }
+
+        public static string Encrypt(SecureString data)
+        {
+            using (var algo = GetAlgorithm())
+            {
+                var result = algo.CreateEncryptor().Encrypt(data);
+                return result;
+            }
+        }
+
         private static MangosEntities GetContext(uint timeout = 15)
         {
             // retrieve entity ConnectionString from configuration file
@@ -38,31 +75,23 @@ namespace MangosTEx.Services
             mysqlBuilder.Port = Settings.DatabasePort;
             mysqlBuilder.Database = Settings.DatabaseName;
             mysqlBuilder.UserID = Settings.DatabaseUsername;
-            mysqlBuilder.Password = Settings.DatabasePassword;
+            using (var algo = GetAlgorithm()) // decrypt database password into simple string
+                mysqlBuilder.Password = algo.CreateDecryptor().DecryptClear(Settings.DatabasePassword);
+
             // setting up ProviderConnectionString in entity ConnectionString
             entityBuilder.ProviderConnectionString = mysqlBuilder.ConnectionString;
             // create the DbContext using ConnectionString
             return new MangosEntities(entityBuilder.ConnectionString);
         }
 
-        public static string CheckDatabaseAccess()
+        private static SymmetricAlgorithm GetAlgorithm()
         {
-            try
-            {
-                using (var context = GetContext(1))
-                {
-                    var adapter = (System.Data.Entity.Infrastructure.IObjectContextAdapter)context;
-                    if (adapter.ObjectContext.DatabaseExists() == true)
-                        return string.Empty;
-                    return "Failed to access database " + Settings.DatabaseName;
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            var algo = Aes.Create();
+            algo.Key = Convert.FromBase64String("6EvipoVj2gGtKUuIVHC5Tm3UIyBEmraD3UcJcrTArCc=");
+            algo.IV = Convert.FromBase64String("RoDnj57f/XJS/7klvBEAPQ==");
+            return algo;
         }
-        #endregion Helpers
+        #endregion Static Methods
 
         #region Items
         private static Func<item_template, Item> _getItem = o => new Item { Id = o.entry, Name = o.name, Description = o.description };

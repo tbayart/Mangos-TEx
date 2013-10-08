@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
 		xmlns:vm="clr-namespace:MangosTEx.ViewModels"
-        Title="Sample App"
+        Title="Mangos Translation Extractor"
         WindowStartupLocation="CenterScreen"
         Width="800" Height="600">
     <Window.Resources>
@@ -26,27 +26,29 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TextBlock>
-            <Ellipse DockPanel.Dock="Left"
-                     DataContext="{Binding ConnectionStatus}"
-                     Width="16"
-                     Height="16"
-                     ToolTip="{Binding ErrorMessage}">
-                <Ellipse.Style>
-                    <Style TargetType="Ellipse">
+            <TextBlock DockPanel.Dock="Left"
+                       DataContext="{Binding ConnectionStatus}"
+                       FontWeight="Bold"
+                       ToolTip="{Binding Message}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                <Setter Property="Fill" Value="Orange" />
+                                <Setter Property="Text" Value="Checking..." />
+                                <Setter Property="Foreground" Value="Orange" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StatusOk}" Value="True">
-                                <Setter Property="Fill" Value="DarkGreen" />
+                            <DataTrigger Binding="{Binding IsValid}" Value="True">
+                                <Setter Property="Text" Value="Connected" />
+                                <Setter Property="Foreground" Value="DarkGreen" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StatusOk}" Value="False">
-                                <Setter Property="Fill" Value="Red" />
+                            <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                <Setter Property="Text" Value="Error!" />
+                                <Setter Property="Foreground" Value="Red" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Ellipse.Style>
-            </Ellipse>
+                </TextBlock.Style>
+            </TextBlock>
 
             <Button DockPanel.Dock="Right"
                     HorizontalAlignment="Right"

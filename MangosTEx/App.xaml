@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Converters.xaml" />
+                <ResourceDictionary Source="/Framework.UI;component/Converters.xaml" />
                 <ResourceDictionary Source="Resources/IconsRD.xaml" />
                 <ResourceDictionary Source="Resources/StoryboardsRD.xaml" />
                 <ResourceDictionary Source="Resources/ImplicitStylesRD.xaml" />

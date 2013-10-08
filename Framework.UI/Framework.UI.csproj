@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\PasswordBoxBinder.cs" />
+    <Compile Include="Converters\IsGreaterThanConverter.cs" />
+    <Compile Include="Converters\IsEqualConverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Debug\ExceptionViewModel.cs" />
     <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\VisualTreeHelper.cs" />
@@ -103,6 +106,10 @@
     <Folder Include="Commands\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Debug\ExceptionViewTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
