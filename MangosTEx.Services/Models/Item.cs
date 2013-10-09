@@ -36,38 +36,5 @@ namespace MangosTEx.Services.Models
             }
         }
         private string _description;
-
-        public string LocalizedName
-        {
-            get { return _localizedName; }
-            set
-            {
-                _localizedName = value;
-                RaisePropertyChanged(() => LocalizedName);
-            }
-        }
-        private string _localizedName;
-
-        public string LocalizedDescription
-        {
-            get { return _localizedDescription; }
-            set
-            {
-                _localizedDescription = value;
-                RaisePropertyChanged(() => LocalizedDescription);
-            }
-        }
-        private string _localizedDescription;
-
-        public string Error
-        {
-            get { return _error; }
-            set
-            {
-                _error = value;
-                RaisePropertyChanged(() => Error);
-            }
-        }
-        private string _error;
     }
 }

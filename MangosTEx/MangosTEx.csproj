@@ -84,6 +84,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\LocalizedItem.cs" />
     <Compile Include="ViewModels\GameObjectLocalizationViewModel.cs" />
     <Compile Include="ViewModels\ItemLocalizationViewModel.cs" />
     <Page Include="Resources\StoryboardsRD.xaml">
@@ -119,7 +120,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Events\GameObjectEvent.cs" />
-    <Compile Include="Events\LocalizedEvent.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -171,7 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

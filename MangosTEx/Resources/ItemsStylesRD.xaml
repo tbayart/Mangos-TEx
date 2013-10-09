@@ -21,19 +21,19 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id"
                                     Width="Auto"
-                                    Binding="{Binding Id}" />
+                                    Binding="{Binding DatabaseItem.Id}" />
                 <DataGridTextColumn Header="Name"
                                     Width="1*"
-                                    Binding="{Binding Name}" />
+                                    Binding="{Binding DatabaseItem.Name}" />
                 <DataGridTextColumn Header="Description"
                                     Width="2*"
-                                    Binding="{Binding Description}" />
+                                    Binding="{Binding DatabaseItem.Description}" />
                 <DataGridTextColumn Header="Localized Name"
                                     Width="1*"
-                                    Binding="{Binding LocalizedName}" />
+                                    Binding="{Binding TranslatedItem.Name}" />
                 <DataGridTextColumn Header="Localized Description"
                                     Width="2*"
-                                    Binding="{Binding LocalizedDescription}" />
+                                    Binding="{Binding TranslatedItem.Description}" />
             </DataGrid.Columns>
         </DataGrid>
     </ControlTemplate>
@@ -56,13 +56,13 @@
     <Style x:Key="ItemsGridStyle"
            TargetType="Control">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Items, Converter={StaticResource IsNullConverter}}"
-                         Value="True">
+            <DataTrigger Binding="{Binding Items.Count, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter=0}"
+                         Value="False">
                 <Setter Property="Template"
                         Value="{StaticResource ItemsLoadingTemplate}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding Items, Converter={StaticResource IsNullConverter}}"
-                         Value="False">
+            <DataTrigger Binding="{Binding Items.Count, Converter={StaticResource IsGreaterThanConverter}, ConverterParameter=0}"
+                         Value="True">
                 <Setter Property="Template"
                         Value="{StaticResource ItemsGridTemplate}" />
             </DataTrigger>

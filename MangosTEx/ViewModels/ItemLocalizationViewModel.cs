@@ -1,59 +1,98 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Framework.MVVM;
 using MangosTEx.Events;
+using MangosTEx.Models;
+using MangosTEx.Services;
+using Framework.Helpers;
 using WowheadApi;
+using dbItem = MangosTEx.Services.Models.Item;
+using whItem = WowheadApi.Models.Item;
 
 namespace MangosTEx.ViewModels
 {
     public class ItemLocalizationViewModel : ObservableViewModel
     {
-        #region EventHandlers
-        private event EventHandler<LocaleItemEventArgs> UpdateItemLocaleEvent;
-        #endregion EventHandlers
-
         #region Ctor
         public ItemLocalizationViewModel()
         {
             InitializeCommands();
-            LoadItems();
+            LoadItemsAsync();
         }
         #endregion Ctor
 
         #region Properties
-        public IEnumerable<MangosTEx.Services.Models.Item> Items
+        public int StartId
         {
-            get { return _items; }
-            private set
+            get { return _startId; }
+            set
             {
-                _items = value;
-                RaisePropertyChanged(() => Items);
+                _startId = value;
+                RaisePropertyChanged(() => StartId);
             }
         }
-        private IEnumerable<MangosTEx.Services.Models.Item> _items;
+        private int _startId = 5000;
+
+        public int PageSize
+        {
+            get { return _pageSize; }
+            set
+            {
+                _pageSize = value;
+                RaisePropertyChanged(() => PageSize);
+            }
+        }
+        private int _pageSize = 100;
+
+        public int ProcessId
+        {
+            get { return _processId; }
+            set
+            {
+                _processId = value;
+                RaisePropertyChanged(() => ProcessId);
+            }
+        }
+        private int _processId;
+
+        private ObservableCollection<LocalizedItem> _items = new ObservableCollection<LocalizedItem>();
+        public IEnumerable<LocalizedItem> Items { get { return _items; } }
         #endregion Properties
 
         #region Methods
-        private void LoadItems()
+        private void LoadItemsAsync()
         {
+            // update processId so we can stop it if the user request a new batch before we finished this one
+            int processId = ++ProcessId;
             Observable.Start(() =>
                 {
-                    // load a bunch of items from database
-                    var provider = new MangosTEx.Services.MangosProvider();
-                    return provider.GetItems()
-                        .Where(o => o.Id >= 900 && o.Id < 1000)
-                        .ToList();
+                    // load items from database
+                    int startId = StartId, pageSize = PageSize;
+                    using (var provider = new MangosProvider())
+                    {
+                        var items = provider.GetItems()
+                            .Where(o => o.Id >= startId)
+                            .Take(pageSize)
+                            .Select(o => new LocalizedItem { DatabaseItem = o });
+                        return items.ToList();
+                    }
                 })
                 .ObserveOnDispatcher()
                 .Subscribe(result =>
                 {
-                    Items = result;
-                    UpdateItemLocaleEvent += OnUpdateItemLocale;
-                    Task.Factory.StartNew(() => GetItemsLocales(result));
+                    // check processId to make sure the user has not requested another batch meantime
+                    if (processId != _processId)
+                        return;
+
+                    // display loaded items to user
+                    _items.AddRange(result);
+                    // update localized translation
+                    GetItemsLocalesAsync(result, processId);
                 }, OnError);
         }
 
@@ -62,33 +101,27 @@ namespace MangosTEx.ViewModels
             throw ex;
         }
 
-        private void GetItemsLocales(IEnumerable<MangosTEx.Services.Models.Item> items)
+        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items, int processId)
         {
-            Parallel.ForEach(items, item =>
-            {
-                var grabber = new WowheadClient(CultureInfo.GetCultureInfo("zh-TW"));
-                try
-                {
-                    WowheadApi.Models.Item loc = grabber.GetItem(item.Id);
-                    UpdateItemLocaleEvent.Invoke(this, new LocaleItemEventArgs(loc));
-                }
-                catch { }
-            });
-            UpdateItemLocaleEvent -= OnUpdateItemLocale;
-        }
+            Observable.Start(() =>
+                Parallel.ForEach(items, (item, ls) =>
+                    {
+                        var grabber = new WowheadClient(CultureInfo.CurrentCulture);
+                        try
+                        {
+                            // if processId has changed, we stop this process
+                            if (processId != ProcessId)
+                                ls.Stop();
 
-        private void OnUpdateItemLocale(object sender, LocaleItemEventArgs e)
-        {
-            if (e.Arg == null)
-                return;
-
-            var item = Items.FirstOrDefault(o => o.Id == e.Arg.Id);
-            if (item != null)
-            {
-                item.LocalizedName = e.Arg.Name;
-                item.LocalizedDescription = e.Arg.Description;
-                //item.Error = e.Arg.Error;
-            }
+                            // update translated item
+                            item.TranslatedItem = grabber.GetItem(item.DatabaseItem.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            // if we got an error, keep it to investigate
+                            item.Error = ex.Message;
+                        }
+                    }));
         }
         #endregion Methods
 

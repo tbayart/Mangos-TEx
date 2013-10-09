@@ -43,12 +43,14 @@
   <ItemGroup>
     <Compile Include="Debug\PerformanceChecker.cs" />
     <Compile Include="Event\EventArgs.cs" />
+    <Compile Include="Helpers\ICollectionHelpers.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\ICommandHelpers.cs" />
     <Compile Include="Helpers\IListHelpers.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="InstanceProvider\InstanceProviderBase.cs" />
+    <Compile Include="Interfaces\ISelectable.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\ServiceProvider.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />

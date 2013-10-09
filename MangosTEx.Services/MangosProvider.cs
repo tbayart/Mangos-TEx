@@ -13,11 +13,16 @@ using MySql.Data.MySqlClient;
 
 namespace MangosTEx.Services
 {
-    public class MangosProvider
+    public class MangosProvider : IDisposable
     {
+        #region Fields
+        private MangosEntities _context;
+        #endregion Fields
+
         #region Ctor
         public MangosProvider()
         {
+            _context = GetContext();
         }
         #endregion Ctor
 
@@ -117,41 +122,48 @@ namespace MangosTEx.Services
             return items;
         }
 
-        public void ItemsLocale(IEnumerable<Item> items, CultureInfo culture)
+        public IEnumerable<Item> GetItemsLocale(CultureInfo culture)
         {
             int offset = WowFramework.Helpers.LocaleHelpers.GetOffset(culture);
             if (offset >= _getLoc.Length)
                 offset = 0;
 
             Func<locales_item, Item> selector = _getLoc[offset];
-            var entries = items.Select(o => o.Id).ToList();
-            var locales = GetContext().locales_item
+            var items = _context.locales_item
                 .AsNoTracking()
-                //.Where(o => entries.Contains(o.entry))
-                .Select(selector)
-                .ToList()
-                .AsParallel();
+                .Select(selector);
 
-            items.AsParallel()
-                .Join(locales, o => o.Id, o => o.Id, (item, loc) =>
-                    {
-                        item.LocalizedName = loc.Name;
-                        item.LocalizedDescription = loc.Description;
-                        return item;
-                    })
-                .ToList();
+            return items;
         }
         #endregion Items
 
         #region GameObjects
         public IEnumerable<GameObject> GetGameObjects()
         {
-            var gameobjects = GetContext().gameobject_template
+            var gameobjects = _context.gameobject_template
                 .AsNoTracking()
                 .Select(o => new GameObject { Id = o.entry, Name = o.name, Type = o.type });
 
             return gameobjects;
         }
         #endregion GameObjects
+
+        #region IDisposable
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose the DbContext
+                _context.Dispose();
+                _context = null;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion IDisposable
     }
 }
