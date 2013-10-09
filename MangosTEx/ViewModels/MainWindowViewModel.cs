@@ -27,8 +27,6 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public MainWindowViewModel()
         {
-            InitializeCommands();
-
             //WowApi.WowApiClient c = new WowApi.WowApiClient(CultureInfo.CurrentCulture);
             //WowApi.Models.Character character;
             //character = c.GetCharacter("Elune", "Kerenn", WowApi.WowApiCharacterDataField.All);
@@ -59,19 +57,8 @@ namespace MangosTEx.ViewModels
             }
         }
 
-        public CultureInfo[] Locales
-        {
-            get { return _locales; }
-            private set
-            {
-                _locales = value;
-                RaisePropertyChanged(() => Locales);
-            }
-        }
-        private CultureInfo[] _locales;
-
+        private IEnumerable<string> _tabList = new List<string> { "Home", "Items", "Game objects" };
         public IEnumerable<string> TabList { get { return _tabList; } }
-        public List<string> _tabList = new List<string> { "Home", "Items", "Game objects" };
 
         public string CurrentTab
         {
@@ -103,7 +90,9 @@ namespace MangosTEx.ViewModels
 
             if (propertyName == GetPropertyName(() => CurrentTab))
             {
-                if (CurrentTab == "Items")
+                if (CurrentTab == "Home")
+                    DataViewModel = ViewModelProvider.GetInstance<HomeViewModel>();
+                else if (CurrentTab == "Items")
                     DataViewModel = ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
                 else if (CurrentTab == "Game Objects")
                     DataViewModel = ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();

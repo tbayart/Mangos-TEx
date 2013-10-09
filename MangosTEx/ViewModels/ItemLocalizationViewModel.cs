@@ -21,7 +21,6 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public ItemLocalizationViewModel()
         {
-            InitializeCommands();
             LoadItemsAsync();
         }
         #endregion Ctor
@@ -62,11 +61,14 @@ namespace MangosTEx.ViewModels
 
         private ObservableCollection<LocalizedItem> _items = new ObservableCollection<LocalizedItem>();
         public IEnumerable<LocalizedItem> Items { get { return _items; } }
+
+        private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
         #region Methods
         private void LoadItemsAsync()
         {
+            CultureInfo culture = Settings.DatabaseCulture;
             // update processId so we can stop it if the user request a new batch before we finished this one
             int processId = ++ProcessId;
             Observable.Start(() =>
@@ -75,7 +77,7 @@ namespace MangosTEx.ViewModels
                     int startId = StartId, pageSize = PageSize;
                     using (var provider = new MangosProvider())
                     {
-                        var items = provider.GetItems()
+                        var items = provider.GetItems(culture)
                             .Where(o => o.Id >= startId)
                             .Take(pageSize)
                             .Select(o => new LocalizedItem { DatabaseItem = o });
@@ -103,10 +105,11 @@ namespace MangosTEx.ViewModels
 
         private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items, int processId)
         {
+            CultureInfo culture = Settings.LocalizationCulture;
             Observable.Start(() =>
                 Parallel.ForEach(items, (item, ls) =>
                     {
-                        var grabber = new WowheadClient(CultureInfo.CurrentCulture);
+                        var grabber = new WowheadClient(culture);
                         try
                         {
                             // if processId has changed, we stop this process

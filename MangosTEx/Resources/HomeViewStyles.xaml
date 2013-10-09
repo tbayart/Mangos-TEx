@@ -1,0 +1,30 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:MangosTEx.ViewModels"
+                    xmlns:properties="clr-namespace:MangosTEx.Properties">
+    <DataTemplate DataType="{x:Type vm:HomeViewModel}">
+        <DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Button HorizontalAlignment="Right"
+                        Content="Save settings"
+                        Command="{Binding SaveSettingsCommand}" />
+                <StackPanel HorizontalAlignment="Left"
+                            Orientation="Horizontal">
+                    <TextBlock Text="Database culture : " />
+                    <ComboBox ItemsSource="{Binding DatabaseCultureList}"
+                              SelectedItem="{Binding DatabaseCulture, Source={x:Static properties:Settings.Default}}"
+                              DisplayMemberPath="DisplayName" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel DockPanel.Dock="Top"
+                        Orientation="Horizontal">
+                <TextBlock Text="Localization culture : " />
+                <ComboBox ItemsSource="{Binding LocalizationCultureList}"
+                          SelectedItem="{Binding LocalizationCulture, Source={x:Static properties:Settings.Default}}"
+                          DisplayMemberPath="DisplayName" />
+            </StackPanel>
+            <Grid></Grid>
+        </DockPanel>
+    </DataTemplate>
+</ResourceDictionary>

@@ -19,7 +19,6 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public GameObjectLocalizationViewModel()
         {
-            InitializeCommands();
             LoadGameObjects();
         }
         #endregion Ctor

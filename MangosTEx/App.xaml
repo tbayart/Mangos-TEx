@@ -11,8 +11,10 @@
                 <ResourceDictionary Source="Resources/StoryboardsRD.xaml" />
                 <ResourceDictionary Source="Resources/ImplicitStylesRD.xaml" />
                 <ResourceDictionary Source="Resources/StylesRD.xaml" />
-                <ResourceDictionary Source="Resources/ItemsStylesRD.xaml" />
-                <ResourceDictionary Source="Resources/GameObjectsStylesRD.xaml" />
+                <!--views styles & data templates-->
+                <ResourceDictionary Source="Resources/HomeViewStyles.xaml" />
+                <ResourceDictionary Source="Resources/ItemLocalizationViewStyles.xaml" />
+                <ResourceDictionary Source="Resources/GameObjectLocalizationViewStyles.xaml" />
                 <ResourceDictionary Source="/MangosTEx.Services;component/ViewTemplates/SettingsViewTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

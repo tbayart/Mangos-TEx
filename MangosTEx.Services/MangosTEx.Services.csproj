@@ -113,10 +113,6 @@
       <Project>{351de1f0-fa80-4587-811a-52568f8667f3}</Project>
       <Name>MangosData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
-      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
-      <Name>WowFramework</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

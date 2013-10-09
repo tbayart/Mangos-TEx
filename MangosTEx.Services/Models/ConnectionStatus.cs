@@ -10,7 +10,5 @@
 
         public bool IsValid { get; private set; }
         public string Message { get; private set; }
-
-        public override string ToString() { return Message; }
     }
 }

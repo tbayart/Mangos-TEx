@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Framework.Helpers;
 using Framework.MVVM;
-using WowFramework.Helpers;
 using WowheadApi.Grabbers;
 using WowheadApi.Models;
 
@@ -41,7 +40,7 @@ namespace WowheadApi
 
         #region Ctor
         public WowheadClient()
-            : this(LocaleHelpers.DefaultCulture)
+            : this(LocalizationHelper.DefaultCulture)
         {
         }
 
@@ -57,8 +56,7 @@ namespace WowheadApi
             get { return _currentLocale; }
             set
             {
-                value = LocaleHelpers.ValidateCulture(value);
-                _currentLocale = value;
+                _currentLocale = value ?? CultureInfo.CurrentCulture;
                 RaisePropertyChanged(() => CurrentLocale);
                 CurrentLocaleChanged();
             }
@@ -76,7 +74,7 @@ namespace WowheadApi
 
         private string GetData(string type, int id)
         {
-            string address= string.Format(_baseQuery, type, id);
+            string address = string.Format(_baseQuery, type, id);
             return WebRequestHelpers.DownloadString(address);
         }
 

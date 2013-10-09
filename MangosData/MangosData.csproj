@@ -479,6 +479,7 @@
     <Compile Include="Context\world_template.cs">
       <DependentUpon>MangosEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LocalizationHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

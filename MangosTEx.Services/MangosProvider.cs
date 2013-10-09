@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 using Framework.Helpers;
+using MangosData;
 using MangosData.Context;
 using MangosTEx.Services.Models;
 using MySql.Data.MySqlClient;
@@ -27,6 +28,8 @@ namespace MangosTEx.Services
         #endregion Ctor
 
         #region Properties
+        public static CultureInfo[] SupportedCultures { get { return LocalizationHelper.GetCultures(); } }
+        public static CultureInfo DefaultCulture { get { return LocalizationHelper.DefaultCulture; } }
         private static Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
@@ -89,6 +92,7 @@ namespace MangosTEx.Services
             return new MangosEntities(entityBuilder.ConnectionString);
         }
 
+        // algorithm data for password encryption
         private static SymmetricAlgorithm GetAlgorithm()
         {
             var algo = Aes.Create();
@@ -113,20 +117,15 @@ namespace MangosTEx.Services
             o => new Item { Id = o.entry, Name = o.name_loc8, Description = o.description_loc8 },
         };
 
-        public IEnumerable<Item> GetItems()
+        public IEnumerable<Item> GetItems(CultureInfo culture)
         {
-            var items = GetContext().item_template
-                .AsNoTracking()
-                .Select(_getItem);
-
-            return items;
-        }
-
-        public IEnumerable<Item> GetItemsLocale(CultureInfo culture)
-        {
-            int offset = WowFramework.Helpers.LocaleHelpers.GetOffset(culture);
-            if (offset >= _getLoc.Length)
-                offset = 0;
+            int offset = LocalizationHelper.GetOffset(culture);
+            if (offset == 0)
+            {
+                return _context.item_template
+                    .AsNoTracking()
+                    .Select(_getItem);
+            }
 
             Func<locales_item, Item> selector = _getLoc[offset];
             var items = _context.locales_item
