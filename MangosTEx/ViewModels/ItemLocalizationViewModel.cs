@@ -13,6 +13,13 @@ using Framework.Helpers;
 using WowheadApi;
 using dbItem = MangosTEx.Services.Models.Item;
 using whItem = WowheadApi.Models.Item;
+using Framework.Debug;
+using System.Windows.Input;
+using System.ComponentModel;
+using System.Windows.Data;
+using Framework.Interfaces;
+using System.Collections;
+using Framework.Commands;
 
 namespace MangosTEx.ViewModels
 {
@@ -21,80 +28,120 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public ItemLocalizationViewModel()
         {
+            SetCollectionView(null);
             LoadItemsAsync();
         }
         #endregion Ctor
 
         #region Properties
-        public int StartId
+        public ICollectionView Items { get; private set; }
+
+        public bool ShowSelectionOnly
         {
-            get { return _startId; }
+            get { return _showSelectionOnly; }
             set
             {
-                _startId = value;
-                RaisePropertyChanged(() => StartId);
+                _showSelectionOnly = value;
+                RaisePropertyChanged(() => ShowSelectionOnly);
+                RefreshCollectionView();
             }
         }
-        private int _startId = 5000;
+        private bool _showSelectionOnly;
 
-        public int PageSize
+        public bool ShowTranslatedOnly
         {
-            get { return _pageSize; }
+            get { return _showTranslatedOnly; }
             set
             {
-                _pageSize = value;
-                RaisePropertyChanged(() => PageSize);
+                _showTranslatedOnly = value;
+                RaisePropertyChanged(() => ShowTranslatedOnly);
+                RefreshCollectionView();
             }
         }
-        private int _pageSize = 100;
+        private bool _showTranslatedOnly;
 
-        public int ProcessId
+        public bool ShowTranslationChangedOnly
         {
-            get { return _processId; }
+            get { return _showTranslationChangedOnly; }
             set
             {
-                _processId = value;
-                RaisePropertyChanged(() => ProcessId);
+                _showTranslationChangedOnly = value;
+                RaisePropertyChanged(() => ShowTranslationChangedOnly);
+                RefreshCollectionView();
             }
         }
-        private int _processId;
-
-        private ObservableCollection<LocalizedItem> _items = new ObservableCollection<LocalizedItem>();
-        public IEnumerable<LocalizedItem> Items { get { return _items; } }
+        private bool _showTranslationChangedOnly;
 
         private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
         #region Methods
+        private Action RefreshCollectionView;
+        private void SetCollectionView(IEnumerable<LocalizedItem> source)
+        {
+            Items = CollectionViewSource.GetDefaultView(source);
+            if (Items != null)
+            {
+                Items.Filter = ItemFilter;
+                RaisePropertyChanged(() => Items);
+                RefreshCollectionView = Items.Refresh;
+            }
+            else
+            {
+                RefreshCollectionView = () => { };
+            }
+        }
+
+        // filter untranslated items
+        private bool ItemFilter(object obj)
+        {
+            LocalizedItem item = (LocalizedItem)obj;
+            return FilterSelection(item)
+                && FilterTranslated(item)
+                && FilterTranslationChanged(item);
+        }
+        private bool FilterSelection(LocalizedItem item)
+        {
+            return ShowSelectionOnly == false || item.IsSelected;
+        }
+        private bool FilterTranslated(LocalizedItem item)
+        {
+            return ShowTranslatedOnly == false || item.TranslatedItem != null;
+        }
+        private bool FilterTranslationChanged(LocalizedItem item)
+        {
+            return ShowTranslationChangedOnly == false || item.TranslatedItem == null
+                || item.DatabaseItem.Name != item.TranslatedItem.Name
+                || item.DatabaseItem.Description != item.TranslatedItem.Description;
+        }
+
+        private int _loadProcessId;
         private void LoadItemsAsync()
         {
             CultureInfo culture = Settings.DatabaseCulture;
-            // update processId so we can stop it if the user request a new batch before we finished this one
-            int processId = ++ProcessId;
+            // get a processId so we can stop it if the user request a new batch before we finished this one
+            int processId = ++_loadProcessId;
+            SetCollectionView(null);
             Observable.Start(() =>
                 {
                     // load items from database
-                    int startId = StartId, pageSize = PageSize;
                     using (var provider = new MangosProvider())
+                    using (new PerformanceChecker("GetItems"))
                     {
-                        var items = provider.GetItems(culture)
-                            .Where(o => o.Id >= startId)
-                            .Take(pageSize)
-                            .Select(o => new LocalizedItem { DatabaseItem = o });
-                        return items.ToList();
+                        return provider.GetItems(culture)
+                            .Select(o => new LocalizedItem { DatabaseItem = o })
+                            .ToList();
                     }
                 })
                 .ObserveOnDispatcher()
                 .Subscribe(result =>
                 {
                     // check processId to make sure the user has not requested another batch meantime
-                    if (processId != _processId)
+                    if (processId != _loadProcessId)
                         return;
 
                     // display loaded items to user
-                    _items.AddRange(result);
-                    // update localized translation
-                    GetItemsLocalesAsync(result, processId);
+                    SetCollectionView(result);
                 }, OnError);
         }
 
@@ -103,19 +150,15 @@ namespace MangosTEx.ViewModels
             throw ex;
         }
 
-        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items, int processId)
+        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items)
         {
             CultureInfo culture = Settings.LocalizationCulture;
+            var grabber = new WowheadClient(culture);
             Observable.Start(() =>
-                Parallel.ForEach(items, (item, ls) =>
+                Parallel.ForEach(items, item =>
                     {
-                        var grabber = new WowheadClient(culture);
                         try
                         {
-                            // if processId has changed, we stop this process
-                            if (processId != ProcessId)
-                                ls.Stop();
-
                             // update translated item
                             item.TranslatedItem = grabber.GetItem(item.DatabaseItem.Id);
                         }
@@ -132,6 +175,14 @@ namespace MangosTEx.ViewModels
         protected override void InitializeCommands()
         {
             base.InitializeCommands();
+            UpdateLocalizationCommand = new DelegateCommand(UpdateLocalizationExecute);
+        }
+
+        public ICommand UpdateLocalizationCommand { get; private set; }
+        private void UpdateLocalizationExecute()
+        {
+            var items = Items.OfType<LocalizedItem>().Where(o => o.IsSelected).ToList();
+            GetItemsLocalesAsync(items);
         }
         #endregion Commands
     }

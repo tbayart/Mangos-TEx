@@ -6,7 +6,12 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Framework.MVVM;
 using MangosTEx.Events;
+using MangosTEx.Services;
 using WowheadApi;
+using dbGameObject = MangosTEx.Services.Models.GameObject;
+using dbPageText = MangosTEx.Services.Models.PageText;
+using whGameObject = WowheadApi.Models.GameObject;
+using whBookPage = WowheadApi.Models.BookPage;
 
 namespace MangosTEx.ViewModels
 {
@@ -24,7 +29,7 @@ namespace MangosTEx.ViewModels
         #endregion Ctor
 
         #region Properties
-        public IEnumerable<MangosTEx.Services.Models.GameObject> GameObjects
+        public IEnumerable<dbGameObject> GameObjects
         {
             get { return _gameObjects; }
             private set
@@ -33,18 +38,21 @@ namespace MangosTEx.ViewModels
                 RaisePropertyChanged(() => GameObjects);
             }
         }
-        private IEnumerable<MangosTEx.Services.Models.GameObject> _gameObjects;
+        private IEnumerable<dbGameObject> _gameObjects;
+
+        private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
 
         #region Methods
         private void LoadGameObjects()
         {
+            CultureInfo culture = Settings.DatabaseCulture;
             Observable.Start(() =>
                 {
                     int minId = 0;
                     // load a bunch of objects from database
-                    var provider = new MangosTEx.Services.MangosProvider();
-                    return provider.GetGameObjects()
+                    var provider = new MangosProvider();
+                    return provider.GetGameObjects(culture)
                         .Where(o => o.Type == (int)MangosTEx.Services.DataTypes.GameObjectType.TEXT)
                         //.Where(o => o.Id > minId)
                         .Take(150)
@@ -66,12 +74,13 @@ namespace MangosTEx.ViewModels
 
         private void GetGameObjectsLocales(IEnumerable<MangosTEx.Services.Models.GameObject> gameObjects)
         {
+            CultureInfo culture = Settings.LocalizationCulture;
             Parallel.ForEach(gameObjects, go =>
             {
-                var grabber = new WowheadClient(CultureInfo.CurrentCulture);
+                var grabber = new WowheadClient(culture);
                 try
                 {
-                    WowheadApi.Models.GameObject loc = grabber.GetGameObject(go.Id);
+                    var loc = grabber.GetGameObject(go.Id);
                     UpdateGameObjectLocaleEvent.Invoke(this, new LocaleGameObjectEventArgs(loc));
                 }
                 catch { }
@@ -91,8 +100,8 @@ namespace MangosTEx.ViewModels
                 go.LocalizedName = e.Arg.Name;
                 go.RelatedData = e.Arg.RelatedData != null
                     ? e.Arg.RelatedData
-                        .OfType<WowheadApi.Models.BookPage>()
-                        .Select(o => new MangosTEx.Services.Models.PageText { Id = ++id, Text = o.Text })
+                        .OfType<whBookPage>()
+                        .Select(o => new dbPageText { Id = ++id, Text = o.Text })
                     : null;
                 //go.Error = e.Arg.Error;
             }

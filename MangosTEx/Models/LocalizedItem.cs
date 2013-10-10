@@ -50,7 +50,7 @@ namespace MangosTEx.Models
                 RaisePropertyChanged(() => IsSelected);
             }
         }
-        public bool _isSelected;
+        private bool _isSelected;
         #endregion ISelectable
     }
 }

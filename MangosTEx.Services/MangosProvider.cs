@@ -11,6 +11,8 @@ using MangosData;
 using MangosData.Context;
 using MangosTEx.Services.Models;
 using MySql.Data.MySqlClient;
+using System.Dynamic;
+using System.ComponentModel;
 
 namespace MangosTEx.Services
 {
@@ -103,47 +105,48 @@ namespace MangosTEx.Services
         #endregion Static Methods
 
         #region Items
-        private static Func<item_template, Item> _getItem = o => new Item { Id = o.entry, Name = o.name, Description = o.description };
-        private static Func<locales_item, Item>[] _getLoc =
-        {
-            o => new Item { Id = o.entry, Name = string.Empty, Description = string.Empty },
-            o => new Item { Id = o.entry, Name = o.name_loc1, Description = o.description_loc1 },
-            o => new Item { Id = o.entry, Name = o.name_loc2, Description = o.description_loc2 },
-            o => new Item { Id = o.entry, Name = o.name_loc3, Description = o.description_loc3 },
-            o => new Item { Id = o.entry, Name = o.name_loc4, Description = o.description_loc4 },
-            o => new Item { Id = o.entry, Name = o.name_loc5, Description = o.description_loc5 },
-            o => new Item { Id = o.entry, Name = o.name_loc6, Description = o.description_loc6 },
-            o => new Item { Id = o.entry, Name = o.name_loc7, Description = o.description_loc7 },
-            o => new Item { Id = o.entry, Name = o.name_loc8, Description = o.description_loc8 },
-        };
-
         public IEnumerable<Item> GetItems(CultureInfo culture)
         {
-            int offset = LocalizationHelper.GetOffset(culture);
-            if (offset == 0)
+            var join = _context.item_template.AsNoTracking()
+                .Join(_context.locales_item, o => o.entry, o => o.entry, (it, li) => new { it, li });
+
+            switch (LocalizationHelper.GetOffset(culture))
             {
-                return _context.item_template
-                    .AsNoTracking()
-                    .Select(_getItem);
+                case 1: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc1, Description = o.li.description_loc1 });
+                case 2: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc2, Description = o.li.description_loc2 });
+                case 3: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc3, Description = o.li.description_loc3 });
+                case 4: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc4, Description = o.li.description_loc4 });
+                case 5: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc5, Description = o.li.description_loc5 });
+                case 6: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc6, Description = o.li.description_loc6 });
+                case 7: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc7, Description = o.li.description_loc7 });
+                case 8: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc8, Description = o.li.description_loc8 });
+                default: return join.Select(o => new Item { Id = o.it.entry, Name = o.it.name, Description = o.it.description });
             }
-
-            Func<locales_item, Item> selector = _getLoc[offset];
-            var items = _context.locales_item
-                .AsNoTracking()
-                .Select(selector);
-
-            return items;
         }
         #endregion Items
 
         #region GameObjects
-        public IEnumerable<GameObject> GetGameObjects()
+        public IEnumerable<GameObject> GetGameObjects(CultureInfo culture)
         {
-            var gameobjects = _context.gameobject_template
-                .AsNoTracking()
-                .Select(o => new GameObject { Id = o.entry, Name = o.name, Type = o.type });
+            var join = _context.gameobject_template.AsNoTracking()
+                .Join(_context.locales_gameobject, o => o.entry, o => o.entry, (got, lgo) => new { got, lgo });
 
-            return gameobjects;
+            switch (LocalizationHelper.GetOffset(culture))
+            {
+                case 1: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc1 });
+                case 2: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc2 });
+                case 3: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc3 });
+                case 4: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc4 });
+                case 5: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc5 });
+                case 6: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc6 });
+                case 7: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc7 });
+                case 8: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.lgo.name_loc8 });
+                default: return join.Select(o => new GameObject { Id = o.got.entry, Type = o.got.type, Name = o.got.name });
+            }
+        }
+
+        public void UpdateGameObjectRelatedData(IEnumerable<GameObject> gameObject)
+        {
         }
         #endregion GameObjects
 
