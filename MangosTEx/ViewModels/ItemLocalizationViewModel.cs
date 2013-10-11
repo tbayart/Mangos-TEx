@@ -119,7 +119,7 @@ namespace MangosTEx.ViewModels
                     using (new PerformanceChecker("GetItems"))
                     {
                         return provider.GetItems(culture)
-                            .Select(o => new LocalizedItem { DatabaseItem = o })
+                            .Select(o => new LocalizedItem(o))
                             .ToList();
                     }
                 })
@@ -165,7 +165,11 @@ namespace MangosTEx.ViewModels
             CultureInfo culture = Settings.DatabaseCulture;
             Observable.Start(() =>
             {
-                var dbItems = items.Select(o => new dbItem { Id = o.TranslatedItem.Id, Name = o.TranslatedItem.Name, Description = o.TranslatedItem.Description });
+                // select valid items and convert them to update database
+                var dbItems = items
+                    .Where(o => string.IsNullOrEmpty(o.Error) == false)
+                    .Select(GetTranslatedDbItem);
+
                 using (var provider = new MangosProvider())
                 {
                     dbItems = provider.UpdateItems(dbItems, culture)
@@ -175,6 +179,16 @@ namespace MangosTEx.ViewModels
                     .ToList()
                     .ForEach(o => o.li.DatabaseItem = o.dbi);
             });
+        }
+
+        private dbItem GetTranslatedDbItem(LocalizedItem item)
+        {
+            return new dbItem
+                {
+                    Id = item.TranslatedItem.Id,
+                    Name = item.TranslatedItem.Name,
+                    Description = item.TranslatedItem.Description
+                };
         }
         #endregion Methods
 
@@ -190,7 +204,7 @@ namespace MangosTEx.ViewModels
         public ICommand UpdateLocalizationCommand { get; private set; }
         private void UpdateLocalizationExecute(IList selection)
         {
-            // retrieve selection with the good Type and create a copy
+            // retrieve selection with the right Type and create a copy
             var items = selection.OfType<LocalizedItem>().ToList();
             // then launch item translation process
             GetItemsLocalesAsync(items);
@@ -199,7 +213,7 @@ namespace MangosTEx.ViewModels
         public ICommand UpdateDatabaseCommand { get; set; }
         private void UpdateDatabaseExecute(IList selection)
         {
-            // retrieve selection with the good Type and create a copy
+            // retrieve selection with the right Type and create a copy
             var items = selection.OfType<LocalizedItem>().ToList();
             //ServiceProvider.GetInstance<InteractionService>().UserChoice
             UpdateDatabaseAsync(items);

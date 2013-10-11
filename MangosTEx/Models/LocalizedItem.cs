@@ -1,10 +1,17 @@
-﻿using Framework.Interfaces;
-using Framework.MVVM;
+﻿using Framework.MVVM;
 
 namespace MangosTEx.Models
 {
-    public class LocalizedItem : ObservableObject, ISelectable
+    public class LocalizedItem : ObservableObject
     {
+        #region Ctor
+        public LocalizedItem(MangosTEx.Services.Models.Item databaseItem)
+        {
+            DatabaseItem = databaseItem;
+            TranslatedItem = new WowheadApi.Models.Item { Id = databaseItem.Id };
+        }
+        #endregion Ctor
+
         #region Properties
         public MangosTEx.Services.Models.Item DatabaseItem
         {
@@ -39,18 +46,5 @@ namespace MangosTEx.Models
         }
         private string _error;
         #endregion Properties
-
-        #region ISelectable
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                RaisePropertyChanged(() => IsSelected);
-            }
-        }
-        private bool _isSelected;
-        #endregion ISelectable
     }
 }
