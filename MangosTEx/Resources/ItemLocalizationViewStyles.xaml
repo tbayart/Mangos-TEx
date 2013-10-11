@@ -68,13 +68,25 @@
                     <DataGridTextColumn Header="Description"
                                         Width="2*"
                                         Binding="{Binding DatabaseItem.Description}"
-                                        IsReadOnly="True" />
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="ToolTip" Value="{Binding DatabaseItem.Description}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="Localized Name"
                                         Width="1*"
                                         Binding="{Binding TranslatedItem.Name}" />
                     <DataGridTextColumn Header="Localized Description"
                                         Width="2*"
-                                        Binding="{Binding TranslatedItem.Description}" />
+                                        Binding="{Binding TranslatedItem.Description}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="ToolTip" Value="{Binding TranslatedItem.Description}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
