@@ -1,25 +1,20 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Input;
+using Framework.Commands;
+using Framework.Debug;
 using Framework.MVVM;
-using MangosTEx.Events;
 using MangosTEx.Models;
 using MangosTEx.Services;
-using Framework.Helpers;
 using WowheadApi;
 using dbItem = MangosTEx.Services.Models.Item;
-using whItem = WowheadApi.Models.Item;
-using Framework.Debug;
-using System.Windows.Input;
-using System.ComponentModel;
-using System.Windows.Data;
-using Framework.Interfaces;
-using System.Collections;
-using Framework.Commands;
 
 namespace MangosTEx.ViewModels
 {
@@ -36,41 +31,41 @@ namespace MangosTEx.ViewModels
         #region Properties
         public ICollectionView Items { get; private set; }
 
-        public bool ShowSelectionOnly
+        public bool HideUntranslated
         {
-            get { return _showSelectionOnly; }
+            get { return _hideUntranslated; }
             set
             {
-                _showSelectionOnly = value;
-                RaisePropertyChanged(() => ShowSelectionOnly);
+                _hideUntranslated = value;
+                RaisePropertyChanged(() => HideUntranslated);
                 RefreshCollectionView();
             }
         }
-        private bool _showSelectionOnly;
+        private bool _hideUntranslated;
 
-        public bool ShowTranslatedOnly
+        public bool HideMatchingTranslation
         {
-            get { return _showTranslatedOnly; }
+            get { return _hideMatchingTranslation; }
             set
             {
-                _showTranslatedOnly = value;
-                RaisePropertyChanged(() => ShowTranslatedOnly);
+                _hideMatchingTranslation = value;
+                RaisePropertyChanged(() => HideMatchingTranslation);
                 RefreshCollectionView();
             }
         }
-        private bool _showTranslatedOnly;
+        private bool _hideMatchingTranslation;
 
-        public bool ShowTranslationChangedOnly
+        public bool ShowErrorOnly
         {
-            get { return _showTranslationChangedOnly; }
+            get { return _showErrorOnly; }
             set
             {
-                _showTranslationChangedOnly = value;
-                RaisePropertyChanged(() => ShowTranslationChangedOnly);
+                _showErrorOnly = value;
+                RaisePropertyChanged(() => ShowErrorOnly);
                 RefreshCollectionView();
             }
         }
-        private bool _showTranslationChangedOnly;
+        private bool _showErrorOnly;
 
         private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
@@ -96,21 +91,16 @@ namespace MangosTEx.ViewModels
         private bool ItemFilter(object obj)
         {
             LocalizedItem item = (LocalizedItem)obj;
-            return FilterSelection(item)
-                && FilterTranslated(item)
-                && FilterTranslationChanged(item);
+            return ShowErrorOnly ? string.IsNullOrEmpty(item.Error) == false
+                : FilterHideUntranslated(item) && FilterHideMatchingTranslation(item);
         }
-        private bool FilterSelection(LocalizedItem item)
+        private bool FilterHideUntranslated(LocalizedItem item)
         {
-            return ShowSelectionOnly == false || item.IsSelected;
+            return HideUntranslated == false || item.TranslatedItem != null;
         }
-        private bool FilterTranslated(LocalizedItem item)
+        private bool FilterHideMatchingTranslation(LocalizedItem item)
         {
-            return ShowTranslatedOnly == false || item.TranslatedItem != null;
-        }
-        private bool FilterTranslationChanged(LocalizedItem item)
-        {
-            return ShowTranslationChangedOnly == false || item.TranslatedItem == null
+            return HideMatchingTranslation == false || item.TranslatedItem == null
                 || item.DatabaseItem.Name != item.TranslatedItem.Name
                 || item.DatabaseItem.Description != item.TranslatedItem.Description;
         }
@@ -169,20 +159,50 @@ namespace MangosTEx.ViewModels
                         }
                     }));
         }
+
+        private void UpdateDatabaseAsync(IEnumerable<LocalizedItem> items)
+        {
+            CultureInfo culture = Settings.DatabaseCulture;
+            Observable.Start(() =>
+            {
+                var dbItems = items.Select(o => new dbItem { Id = o.TranslatedItem.Id, Name = o.TranslatedItem.Name, Description = o.TranslatedItem.Description });
+                using (var provider = new MangosProvider())
+                {
+                    dbItems = provider.UpdateItems(dbItems, culture)
+                        .ToList();
+                }
+                items.Join(dbItems, o => o.DatabaseItem.Id, o => o.Id, (li, dbi) => new { li, dbi })
+                    .ToList()
+                    .ForEach(o => o.li.DatabaseItem = o.dbi);
+            });
+        }
         #endregion Methods
 
         #region Commands
+        public IList SelectedItems { get; set; }
         protected override void InitializeCommands()
         {
             base.InitializeCommands();
-            UpdateLocalizationCommand = new DelegateCommand(UpdateLocalizationExecute);
+            UpdateLocalizationCommand = new DelegateCommand<IList>(UpdateLocalizationExecute);
+            UpdateDatabaseCommand = new DelegateCommand<IList>(UpdateDatabaseExecute);
         }
 
         public ICommand UpdateLocalizationCommand { get; private set; }
-        private void UpdateLocalizationExecute()
+        private void UpdateLocalizationExecute(IList selection)
         {
-            var items = Items.OfType<LocalizedItem>().Where(o => o.IsSelected).ToList();
+            // retrieve selection with the good Type and create a copy
+            var items = selection.OfType<LocalizedItem>().ToList();
+            // then launch item translation process
             GetItemsLocalesAsync(items);
+        }
+
+        public ICommand UpdateDatabaseCommand { get; set; }
+        private void UpdateDatabaseExecute(IList selection)
+        {
+            // retrieve selection with the good Type and create a copy
+            var items = selection.OfType<LocalizedItem>().ToList();
+            //ServiceProvider.GetInstance<InteractionService>().UserChoice
+            UpdateDatabaseAsync(items);
         }
         #endregion Commands
     }

@@ -11,8 +11,6 @@ using MangosData;
 using MangosData.Context;
 using MangosTEx.Services.Models;
 using MySql.Data.MySqlClient;
-using System.Dynamic;
-using System.ComponentModel;
 
 namespace MangosTEx.Services
 {
@@ -121,6 +119,56 @@ namespace MangosTEx.Services
                 case 7: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc7, Description = o.li.description_loc7 });
                 case 8: return join.Select(o => new Item { Id = o.it.entry, Name = o.li.name_loc8, Description = o.li.description_loc8 });
                 default: return join.Select(o => new Item { Id = o.it.entry, Name = o.it.name, Description = o.it.description });
+            }
+        }
+
+        public IEnumerable<Item> UpdateItems(IEnumerable<Item> items, CultureInfo culture)
+        {
+            int offset = LocalizationHelper.GetOffset(culture);
+            MangosEntities context = GetContext();
+            try
+            {
+                if (offset == 0)
+                {
+                    var item_templates = items
+                        .Join(context.item_template, o => o.Id, o => o.entry, (i, it) => new { it, i })
+                        .ToList();
+                    item_templates.ForEach(o =>
+                        {
+                            o.it.name = o.i.Name;
+                            o.it.description = o.i.Description;
+                        });
+                    return item_templates.Select(o => new Item { Id = o.it.entry, Name = o.it.name, Description = o.it.description });
+                }
+
+                var locales_items = items
+                    .Join(context.locales_item, o => o.Id, o => o.entry, (i, li) => new { li, i })
+                    .ToList();
+                switch (offset)
+                {
+                    case 1: locales_items.ForEach(o => { o.li.name_loc1 = o.i.Name; o.li.description_loc1 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc1, Description = o.li.description_loc1 });
+                    case 2: locales_items.ForEach(o => { o.li.name_loc2 = o.i.Name; o.li.description_loc2 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc2, Description = o.li.description_loc2 });
+                    case 3: locales_items.ForEach(o => { o.li.name_loc3 = o.i.Name; o.li.description_loc3 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc3, Description = o.li.description_loc3 });
+                    case 4: locales_items.ForEach(o => { o.li.name_loc4 = o.i.Name; o.li.description_loc4 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc4, Description = o.li.description_loc4 });
+                    case 5: locales_items.ForEach(o => { o.li.name_loc5 = o.i.Name; o.li.description_loc5 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc5, Description = o.li.description_loc5 });
+                    case 6: locales_items.ForEach(o => { o.li.name_loc6 = o.i.Name; o.li.description_loc6 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc6, Description = o.li.description_loc6 });
+                    case 7: locales_items.ForEach(o => { o.li.name_loc7 = o.i.Name; o.li.description_loc7 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc7, Description = o.li.description_loc7 });
+                    case 8: locales_items.ForEach(o => { o.li.name_loc8 = o.i.Name; o.li.description_loc8 = o.i.Description; });
+                        return locales_items.Select(o => new Item { Id = o.li.entry, Name = o.li.name_loc8, Description = o.li.description_loc8 });
+                }
+                throw new NotImplementedException("Unsupported culture " + culture.Name);
+            }
+            finally
+            {
+                context.SaveChanges();
+                context.Dispose();
             }
         }
         #endregion Items
