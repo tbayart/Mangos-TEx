@@ -7,7 +7,6 @@ using Framework.MVVM;
 using Newtonsoft.Json;
 using WowApi.JsonConverters;
 using WowApi.Models;
-using WowFramework.Helpers;
 
 namespace WowApi
 {
@@ -29,7 +28,7 @@ namespace WowApi
         /// This constructor initialize the client with default culture
         /// </summary>
         public WowApiClient()
-            : this(LocaleHelpers.DefaultCulture)
+            : this(LocalizationHelper.DefaultCulture)
         {
         }
 
@@ -56,7 +55,7 @@ namespace WowApi
             get { return _currentLocale; }
             set
             {
-                value = LocaleHelpers.ValidateCulture(value);
+                value = LocalizationHelper.ValidateCulture(value);
                 _currentLocale = value;
                 RaisePropertyChanged(() => CurrentLocale);
                 CurrentLocaleChanged();
@@ -85,8 +84,8 @@ namespace WowApi
         /// </summary>
         private void CurrentLocaleChanged()
         {
-            _urlPrefix = LocaleHelpers.GetHost(CurrentLocale);
-            _urlLocaleSuffix = string.Concat("locale=", LocaleHelpers.GetLocale(CurrentLocale));
+            _urlPrefix = LocalizationHelper.GetHost(CurrentLocale);
+            _urlLocaleSuffix = string.Concat("locale=", LocalizationHelper.GetLocale(CurrentLocale));
         }
 
         /// <summary>

@@ -174,10 +174,6 @@
       <Project>{7aa9d6a2-52e3-421b-b5ed-b7fbae5a6a25}</Project>
       <Name>WowApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
-      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
-      <Name>WowFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WowheadApi\WowheadApi.csproj">
       <Project>{f74f3d0d-af9f-4cf4-a108-617a17b0f358}</Project>
       <Name>WowheadApi</Name>

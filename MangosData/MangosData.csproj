@@ -506,10 +506,6 @@
       <Project>{03ff96bd-8622-47a7-b4bd-e6d1c53df34f}</Project>
       <Name>Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WowFramework\WowFramework.csproj">
-      <Project>{c0c49833-91bd-4fcd-bd4f-3acd54c70232}</Project>
-      <Name>WowFramework</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

@@ -4,40 +4,39 @@ using System.Globalization;
 using System.Linq;
 using Framework.Collections;
 
-namespace WowFramework.Helpers
+namespace WowApi
 {
     /// <summary>
-    /// Helpers to manage cultures with mangos, WoW API and other data providers
+    /// Helpers to manage cultures with WoW API
     /// </summary>
-    public static class LocaleHelpers
+    public static class LocalizationHelper
     {
         #region Fields
         /// <summary>
         /// List of supported cultures
         /// - culture string
-        /// - culture offset for mangos
         /// - host to request WoW API
         /// </summary>
-        private static IEnumerable<Tuple<string, int, string>> _localeInfoList = new TupleList<string, int, string>
+        private static IEnumerable<Tuple<string, string>> _localeInfoList = new TupleList<string, string>
         {
-            { "en-US", 0, "us.battle.net" },
-            { "es-MX", 7, "us.battle.net" },
-            { "pt-BR", 7, "us.battle.net" },
-            { "en-GB", 0, "eu.battle.net" },
-            { "es-ES", 6, "eu.battle.net" },
-            { "fr-FR", 2, "eu.battle.net" },
-            { "ru-RU", 8, "eu.battle.net" },
-            { "de-DE", 3, "eu.battle.net" },
-            { "pt-PT", 6, "eu.battle.net" },
-            { "it-IT", 0, "eu.battle.net" },
-            { "ko-KR", 1, "kr.battle.net" },
-            { "zh-TW", 5, "tw.battle.net" },
-            { "zh-CN", 4, "www.battlenet.com.cn" },
+            { "en-US", "us.battle.net" },
+            { "es-MX", "us.battle.net" },
+            { "pt-BR", "us.battle.net" },
+            { "en-GB", "eu.battle.net" },
+            { "es-ES", "eu.battle.net" },
+            { "fr-FR", "eu.battle.net" },
+            { "ru-RU", "eu.battle.net" },
+            { "de-DE", "eu.battle.net" },
+            { "pt-PT", "eu.battle.net" },
+            { "it-IT", "eu.battle.net" },
+            { "ko-KR", "kr.battle.net" },
+            { "zh-TW", "tw.battle.net" },
+            { "zh-CN", "www.battlenet.com.cn" },
         };
         #endregion Fields
 
         #region Private Methods
-        private static Tuple<string, int, string> GetItem(CultureInfo culture)
+        private static Tuple<string, string> GetItem(CultureInfo culture)
         {
             culture = ValidateCulture(culture);
             // locate the culture
@@ -88,23 +87,13 @@ namespace WowFramework.Helpers
         }
 
         /// <summary>
-        /// Provide the locale offset for a culture
-        /// </summary>
-        /// <param name="culture">The requested culture</param>
-        /// <returns>The culture offset</returns>
-        public static int GetOffset(CultureInfo culture)
-        {
-            return GetItem(culture).Item2;
-        }
-
-        /// <summary>
         /// Provide WoW API host name for a given culture
         /// </summary>
         /// <param name="culture">The requested culture</param>
         /// <returns>The woW API host string</returns>
         public static string GetHost(CultureInfo culture)
         {
-            return string.Format("https://{0}/api/wow/", GetItem(culture).Item3);
+            return string.Format("https://{0}/api/wow/", GetItem(culture).Item2);
         }
         #endregion Public Methods
     }
