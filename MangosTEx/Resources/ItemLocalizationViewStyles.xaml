@@ -34,7 +34,17 @@
             </DockPanel>
             <StackPanel DockPanel.Dock="Bottom"
                         Orientation="Horizontal">
-                <TextBlock Text="{Binding SelectedItems, ElementName=ItemsDataGrid, StringFormat='{}{0} selected items'}" />
+                <TextBlock Text="{Binding Items.SourceCollection.Count,
+                                  StringFormat='{}total : {0} items'}" />
+                <TextBlock Text="/"
+                           Margin="5,0" />
+                <TextBlock Text="{Binding Items.Count,
+                                  StringFormat='{}in view : {0} items'}" />
+                <TextBlock Text="/"
+                           Margin="5,0" />
+                <TextBlock Text="{Binding SelectedItems.Count,
+                                  ElementName=ItemsDataGrid,
+                                  StringFormat='{}selected : {0} items'}" />
             </StackPanel>
             <DataGrid x:Name="ItemsDataGrid"
                       ItemsSource="{Binding Items}"
