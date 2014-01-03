@@ -13,12 +13,6 @@ namespace WowheadApi.Grabbers
         private static string _idTagFormat = "g_objects[{0}]";
         #endregion Fields
 
-        #region Ctor
-        public GameObjectGrabber()
-        {
-        }
-        #endregion Ctor
-
         #region IGrabber
         public GameObject Extract(string data, int id)
         {
