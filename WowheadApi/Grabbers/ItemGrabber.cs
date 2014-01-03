@@ -36,12 +36,6 @@ namespace WowheadApi.Grabbers
         private static Regex _compute = new Regex(@"([0-9]+(\s*[-+*/]\s*)+)+[0-9]+"); // regex to find undone calculations
         #endregion Fields
 
-        #region Ctor
-        public ItemGrabber()
-        {
-        }
-        #endregion Ctor
-
         #region Methods
         private string CleanupLabel(string value)
         {
@@ -111,27 +105,31 @@ namespace WowheadApi.Grabbers
             // look for table tags
             var tables = doc.DocumentNode.Descendants("table").ToList();
 
-            // name is in first table and in a <b class="q"> node, but q can be followed by a number (q0, q1...)
+            // name is in first table if any, or directly in data
+            // and in a <b class="q"> node, but q can be followed by a number (q0, q1...)
             Func<HtmlNode, bool> isClass_q_Node = o => o.Attributes.Any(a => a.Name == "class" && a.Value.StartsWith("q"));
-            item.Name = tables.First().Descendants("b").Where(isClass_q_Node)
+            item.Name = (tables.FirstOrDefault() ?? doc.DocumentNode).Descendants("b").Where(isClass_q_Node)
                 .Select(o => CleanupLabel(o.InnerText))
                 .FirstOrDefault();
 
-            // description is in last table and in a <span class="q"> node; again, q can be followed by a number
-            var descNodes = tables.Last().Descendants("span").Where(isClass_q_Node);
-            var qnode = descNodes.FirstOrDefault(o => o.Attributes["class"].Value == "q")
-                ?? descNodes.FirstOrDefault(); // if we can't find a class="q" span node, we take the first
-
-            if (qnode != null)
+            if (tables.Any())
             {
-                // check if the nod contains <a> node as child
-                qnode = qnode.Descendants("a").FirstOrDefault() ?? qnode;
-                // remove comments
-                var comments = qnode.ChildNodes.OfType<HtmlCommentNode>().ToList();
-                foreach (var c in comments)
-                    qnode.ChildNodes.Remove(c);
-                // and finally, extract the description
-                item.Description = CleanupDescription(qnode.InnerText);
+                // description is in last table and in a <span class="q"> node; again, q can be followed by a number
+                var descNodes = tables.Last().Descendants("span").Where(isClass_q_Node);
+                var qnode = descNodes.FirstOrDefault(o => o.Attributes["class"].Value == "q")
+                    ?? descNodes.FirstOrDefault(); // if we can't find a class="q" span node, we take the first
+
+                if (qnode != null)
+                {
+                    // check if the nod contains <a> node as child
+                    qnode = qnode.Descendants("a").FirstOrDefault() ?? qnode;
+                    // remove comments
+                    var comments = qnode.ChildNodes.OfType<HtmlCommentNode>().ToList();
+                    foreach (var c in comments)
+                        qnode.ChildNodes.Remove(c);
+                    // and finally, extract the description
+                    item.Description = CleanupDescription(qnode.InnerText);
+                }
             }
 
             return item;
