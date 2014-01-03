@@ -2,13 +2,13 @@
 
 namespace MangosTEx.Models
 {
-    public class LocalizedItem : Localized<MangosTEx.Services.Models.Item, WowheadApi.Models.Item>
+    public class LocalizedQuest : Localized<MangosTEx.Services.Models.Quest, WowheadApi.Models.Quest>
     {
         #region Ctor
-        public LocalizedItem(MangosTEx.Services.Models.Item databaseItem)
+        public LocalizedQuest(MangosTEx.Services.Models.Quest dbQuest)
         {
-            DatabaseEntity = databaseItem;
-            TranslatedEntity = new WowheadApi.Models.Item { Id = databaseItem.Id };
+            DatabaseEntity = dbQuest;
+            TranslatedEntity = new WowheadApi.Models.Quest { Id = dbQuest.Id };
         }
         #endregion Ctor
 
@@ -16,10 +16,9 @@ namespace MangosTEx.Models
         protected override LocalizationStatus GetStatus()
         {
             if (DatabaseEntity != null && TranslatedEntity != null
-            && string.IsNullOrEmpty(TranslatedEntity.Name) == false)
+            && string.IsNullOrEmpty(TranslatedEntity.Title) == false)
             {
-                if (DatabaseEntity.Name == TranslatedEntity.Name
-                && DatabaseEntity.Description == TranslatedEntity.Description)
+                if (DatabaseEntity.Title == TranslatedEntity.Title)
                     return LocalizationStatus.Equal;
 
                 return LocalizationStatus.NotEqual;

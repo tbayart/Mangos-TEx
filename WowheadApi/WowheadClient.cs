@@ -26,7 +26,6 @@ namespace WowheadApi
         // métier :                 http://www.wowhead.com/skill=773
         // monnaies :               http://www.wowhead.com/currency=416
         // pnjs :                   http://www.wowhead.com/npc=15727
-        // quêtes :                 http://www.wowhead.com/quest=9874
         // races :                  http://www.wowhead.com/race=22
         // Sets transmogrifiés :    http://www.wowhead.com/transmog-set=1308
         // sorts/glyphs :           http://www.wowhead.com/spell=86524
@@ -112,6 +111,17 @@ namespace WowheadApi
         public GameObject GetGameObject(int id)
         {
             return Get<GameObject, GameObjectGrabber>("object", id);
+        }
+
+        /// <summary>
+        /// Provide data about quests
+        /// http://www.wowhead.com/quest=9874
+        /// </summary>
+        /// <param name="id">The quest id</param>
+        /// <returns>The quest object</returns>
+        public Quest GetQuest(int id)
+        {
+            return Get<Quest, QuestGrabber>("quest", id);
         }
         #endregion Public Methods
     }

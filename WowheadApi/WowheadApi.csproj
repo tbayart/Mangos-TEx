@@ -45,11 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grabbers\QuestGrabber.cs" />
     <Compile Include="Grabbers\IGrabber.cs" />
     <Compile Include="Grabbers\ItemGrabber.cs" />
     <Compile Include="Grabbers\GameObjectGrabber.cs" />
     <Compile Include="LocalizationHelper.cs" />
     <Compile Include="Models\Base\GameObjectData.cs" />
+    <Compile Include="Models\Quest.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\GameObject.cs" />
     <Compile Include="Models\BookPage.cs" />

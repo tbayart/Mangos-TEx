@@ -14,22 +14,22 @@ using Framework.MVVM;
 using MangosTEx.Models;
 using MangosTEx.Services;
 using WowheadApi;
-using dbItem = MangosTEx.Services.Models.Item;
+using dbQuest = MangosTEx.Services.Models.Quest;
 
 namespace MangosTEx.ViewModels
 {
-    public class ItemLocalizationViewModel : ObservableViewModel
+    public class QuestLocalizationViewModel : ObservableViewModel
     {
         #region Ctor
-        public ItemLocalizationViewModel()
+        public QuestLocalizationViewModel()
         {
             SetCollectionView(null);
-            LoadItemsAsync();
+            LoadDataAsync();
         }
         #endregion Ctor
 
         #region Properties
-        public ICollectionView Items { get; private set; }
+        public ICollectionView Data { get; private set; }
 
         public bool HideUntranslated
         {
@@ -72,41 +72,40 @@ namespace MangosTEx.ViewModels
 
         #region Methods
         private Action RefreshCollectionView;
-        private void SetCollectionView(IEnumerable<LocalizedItem> source)
+        private void SetCollectionView(IEnumerable<LocalizedQuest> source)
         {
-            Items = CollectionViewSource.GetDefaultView(source);
-            if (Items != null)
+            Data = CollectionViewSource.GetDefaultView(source);
+            if (Data != null)
             {
-                Items.Filter = ItemFilter;
-                RaisePropertyChanged(() => Items);
-                RefreshCollectionView = Items.Refresh;
+                Data.Filter = DataFilter;
+                RefreshCollectionView = Data.Refresh;
             }
             else
             {
                 RefreshCollectionView = () => { };
             }
+            RaisePropertyChanged(() => Data);
         }
 
-        // filter untranslated items
-        private bool ItemFilter(object obj)
+        private bool DataFilter(object obj)
         {
-            LocalizedItem item = (LocalizedItem)obj;
-            return ShowErrorOnly ? item.Status == LocalizationStatus.Error
-                : FilterHideUntranslated(item) && FilterHideMatchingTranslation(item);
+            LocalizedQuest quest = (LocalizedQuest)obj;
+            return ShowErrorOnly ? string.IsNullOrEmpty(quest.Error) == false
+                : FilterHideUntranslated(quest) && FilterHideMatchingTranslation(quest);
         }
-        private bool FilterHideUntranslated(LocalizedItem item)
+        private bool FilterHideUntranslated(LocalizedQuest quest)
         {
-            return HideUntranslated == false || item.Status != LocalizationStatus.Untranslated;
+            return HideUntranslated == false || quest.TranslatedEntity != null;
         }
-        private bool FilterHideMatchingTranslation(LocalizedItem item)
+        private bool FilterHideMatchingTranslation(LocalizedQuest quest)
         {
-            return HideMatchingTranslation == false
-                || item.TranslatedEntity == null
-                || item.Status != LocalizationStatus.Equal;
+            return HideMatchingTranslation == false || quest.TranslatedEntity == null
+                || quest.DatabaseEntity.Title != quest.TranslatedEntity.Title
+                || quest.DatabaseEntity.Details != quest.TranslatedEntity.Details;
         }
 
         private int _loadProcessId;
-        private void LoadItemsAsync()
+        private void LoadDataAsync()
         {
             CultureInfo culture = Settings.DatabaseCulture;
             // get a processId so we can stop it if the user request a new batch before we finished this one
@@ -116,10 +115,11 @@ namespace MangosTEx.ViewModels
                 {
                     // load items from database
                     using (var provider = new MangosProvider())
-                    using (new PerformanceChecker("GetItems"))
+                    using (new PerformanceChecker("GetQuests"))
                     {
-                        return provider.GetItems(culture)
-                            .Select(o => new LocalizedItem(o))
+                        return provider.GetQuests(culture)
+                            .Where(o => o.Id >= 9874 && o.Id <= 9888)
+                            .Select(o => new LocalizedQuest(o))
                             .ToList();
                     }
                 })
@@ -140,7 +140,7 @@ namespace MangosTEx.ViewModels
             throw ex;
         }
 
-        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items)
+        private void GetLocalesAsync(IEnumerable<LocalizedQuest> items)
         {
             CultureInfo culture = Settings.LocalizationCulture;
             var grabber = new WowheadClient(culture);
@@ -150,7 +150,7 @@ namespace MangosTEx.ViewModels
                         try
                         {
                             // update translated item
-                            item.TranslatedEntity = grabber.GetItem(item.DatabaseEntity.Id);
+                            item.TranslatedEntity = grabber.GetQuest(item.DatabaseEntity.Id);
                         }
                         catch (Exception ex)
                         {
@@ -160,19 +160,19 @@ namespace MangosTEx.ViewModels
                     }));
         }
 
-        private void UpdateDatabaseAsync(IEnumerable<LocalizedItem> items)
+        private void UpdateDatabaseAsync(IEnumerable<LocalizedQuest> items)
         {
             CultureInfo culture = Settings.DatabaseCulture;
             Observable.Start(() =>
             {
                 // select valid items and convert them to update database
                 var dbItems = items
-                    .Where(o => string.IsNullOrEmpty(o.Error))
+                    .Where(o => string.IsNullOrEmpty(o.Error) == false)
                     .Select(GetTranslatedDbItem);
 
                 using (var provider = new MangosProvider())
                 {
-                    dbItems = provider.UpdateItems(dbItems, culture)
+                    dbItems = provider.UpdateQuests(dbItems, culture)
                         .ToList();
                 }
                 items.Join(dbItems, o => o.DatabaseEntity.Id, o => o.Id, (li, dbi) => new { li, dbi })
@@ -181,13 +181,13 @@ namespace MangosTEx.ViewModels
             });
         }
 
-        private dbItem GetTranslatedDbItem(LocalizedItem item)
+        private dbQuest GetTranslatedDbItem(LocalizedQuest item)
         {
-            return new dbItem
+            return new dbQuest
                 {
                     Id = item.TranslatedEntity.Id,
-                    Name = item.TranslatedEntity.Name,
-                    Description = item.TranslatedEntity.Description
+                    Title = item.TranslatedEntity.Title,
+                    Details = item.TranslatedEntity.Details
                 };
         }
         #endregion Methods
@@ -204,16 +204,16 @@ namespace MangosTEx.ViewModels
         private void UpdateLocalizationExecute(IList selection)
         {
             // retrieve selection with the right Type and create a copy
-            var items = selection.OfType<LocalizedItem>().ToList();
+            var items = selection.OfType<LocalizedQuest>().ToList();
             // then launch item translation process
-            GetItemsLocalesAsync(items);
+            GetLocalesAsync(items);
         }
 
         public ICommand UpdateDatabaseCommand { get; set; }
         private void UpdateDatabaseExecute(IList selection)
         {
             // retrieve selection with the right Type and create a copy
-            var items = selection.OfType<LocalizedItem>().ToList();
+            var items = selection.OfType<LocalizedQuest>().ToList();
             //ServiceProvider.GetInstance<InteractionService>().UserChoice
             UpdateDatabaseAsync(items);
         }

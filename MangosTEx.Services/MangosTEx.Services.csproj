@@ -71,6 +71,7 @@
     <Compile Include="DataTypes\ProxyAuthEnum.cs" />
     <Compile Include="ModelBase\GameObjectData.cs" />
     <Compile Include="Models\ConnectionStatus.cs" />
+    <Compile Include="Models\Quest.cs" />
     <Compile Include="Models\GameObject.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\PageText.cs" />

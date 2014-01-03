@@ -42,19 +42,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id"
                                     Width="Auto"
-                                    Binding="{Binding Id}">
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Error,
-                                                       Converter={StaticResource IsNullConverter}}"
-                                             Value="False">
-                                    <Setter Property="Background" Value="Tomato" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </DataGridTextColumn>
+                                    Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Type"
                                     Width="Auto"
                                     Binding="{Binding Type}" />

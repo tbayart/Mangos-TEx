@@ -3,7 +3,8 @@
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                     xmlns:vm="clr-namespace:MangosTEx.ViewModels"
-                    xmlns:fwki="http://Framework/Interactivity">
+                    xmlns:fwki="http://Framework/Interactivity"
+                    xmlns:uc="clr-namespace:MangosTEx.UserControls">
     <ControlTemplate x:Key="ItemsGridTemplate">
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Top"
@@ -53,47 +54,41 @@
                       CanUserDeleteRows="False"
                       CanUserResizeRows="False"
                       EnableRowVirtualization="True">
-                <DataGrid.Resources>
-                    <Style TargetType="DataGridRow">
-                        <Setter Property="ToolTip"
-                                Value="{Binding Error}" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Error, Converter={StaticResource IsNullConverter}}"
-                                         Value="False">
-                                <Setter Property="Background" Value="Tomato" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.Resources>
-
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <uc:StatusIcon />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Id"
                                         Width="Auto"
-                                        Binding="{Binding DatabaseItem.Id}"
+                                        Binding="{Binding DatabaseEntity.Id}"
                                         IsReadOnly="True" />
                     <DataGridTextColumn Header="Name"
                                         Width="1*"
-                                        Binding="{Binding DatabaseItem.Name}"
+                                        Binding="{Binding DatabaseEntity.Name}"
                                         IsReadOnly="True" />
                     <DataGridTextColumn Header="Description"
                                         Width="2*"
-                                        Binding="{Binding DatabaseItem.Description}"
+                                        Binding="{Binding DatabaseEntity.Description}"
                                         IsReadOnly="True">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
-                                <Setter Property="ToolTip" Value="{Binding DatabaseItem.Description}" />
+                                <Setter Property="ToolTip" Value="{Binding DatabaseEntity.Description}" />
                             </Style>
                         </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>
                     <DataGridTextColumn Header="Localized Name"
                                         Width="1*"
-                                        Binding="{Binding TranslatedItem.Name}" />
+                                        Binding="{Binding TranslatedEntity.Name}" />
                     <DataGridTextColumn Header="Localized Description"
                                         Width="2*"
-                                        Binding="{Binding TranslatedItem.Description}">
+                                        Binding="{Binding TranslatedEntity.Description}">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
-                                <Setter Property="ToolTip" Value="{Binding TranslatedItem.Description}" />
+                                <Setter Property="ToolTip" Value="{Binding TranslatedEntity.Description}" />
                             </Style>
                         </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>

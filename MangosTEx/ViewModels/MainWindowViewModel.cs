@@ -57,7 +57,7 @@ namespace MangosTEx.ViewModels
             }
         }
 
-        private IEnumerable<string> _tabList = new List<string> { "Home", "Items", "Game objects" };
+        private IEnumerable<string> _tabList = new List<string> { "Home", "Items", "Game objects", "Quests" };
         public IEnumerable<string> TabList { get { return _tabList; } }
 
         public string CurrentTab
@@ -96,6 +96,8 @@ namespace MangosTEx.ViewModels
                     DataViewModel = ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
                 else if (CurrentTab == "Game Objects")
                     DataViewModel = ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();
+                else if (CurrentTab == "Quests")
+                    DataViewModel = ViewModelProvider.GetInstance<QuestLocalizationViewModel>();
                 else
                     DataViewModel = null;
             }
