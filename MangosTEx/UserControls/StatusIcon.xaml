@@ -17,6 +17,20 @@
                                    Fill="Transparent" />
                         <ControlTemplate.Triggers>
                             <DataTrigger Binding="{Binding Status}"
+                                         Value="{x:Static model:LocalizationStatus.Unprocessed}">
+                                <Setter TargetName="icon"
+                                        Property="Fill" Value="Transparent" />
+                                <Setter TargetName="icon"
+                                        Property="OpacityMask" Value="{x:Null}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}"
+                                         Value="{x:Static model:LocalizationStatus.Untranslated}">
+                                <Setter TargetName="icon"
+                                        Property="Fill" Value="Blue" />
+                                <Setter TargetName="icon"
+                                        Property="OpacityMask" Value="{StaticResource BrushRightArrow}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Status}"
                                          Value="{x:Static model:LocalizationStatus.Equal}">
                                 <Setter TargetName="icon"
                                         Property="Fill" Value="Green" />

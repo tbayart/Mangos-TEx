@@ -1811,14 +1811,14 @@
           <Property Name="name_loc6" Type="varchar" Nullable="false" MaxLength="100" />
           <Property Name="name_loc7" Type="varchar" Nullable="false" MaxLength="100" />
           <Property Name="name_loc8" Type="varchar" Nullable="false" MaxLength="100" />
-          <Property Name="description_loc1" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc2" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc3" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc4" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc5" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc6" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc7" Type="varchar" MaxLength="255" />
-          <Property Name="description_loc8" Type="varchar" MaxLength="255" />
+          <Property Name="description_loc1" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc2" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc3" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc4" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc5" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc6" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc7" Type="varchar" MaxLength="500" />
+          <Property Name="description_loc8" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="locales_npc_text">
           <Key>
@@ -4541,14 +4541,14 @@
           <Property Name="name_loc6" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
           <Property Name="name_loc7" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
           <Property Name="name_loc8" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc1" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc2" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc3" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc4" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc5" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc6" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc7" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
-          <Property Name="description_loc8" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc1" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc2" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc3" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc4" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc5" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc6" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc7" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
+          <Property Name="description_loc8" Type="String" MaxLength="500" Unicode="false" FixedLength="false" />
         </EntityType>
         <EntityType Name="locales_npc_text">
           <Key>

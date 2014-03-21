@@ -31,17 +31,17 @@ namespace MangosTEx.ViewModels
         #region Properties
         public ICollectionView Items { get; private set; }
 
-        public bool HideUntranslated
+        public bool HideTranslated
         {
-            get { return _hideUntranslated; }
+            get { return _hideTranslated; }
             set
             {
-                _hideUntranslated = value;
-                RaisePropertyChanged(() => HideUntranslated);
+                _hideTranslated = value;
+                RaisePropertyChanged(() => HideTranslated);
                 RefreshCollectionView();
             }
         }
-        private bool _hideUntranslated;
+        private bool _hideTranslated;
 
         public bool HideMatchingTranslation
         {
@@ -96,7 +96,7 @@ namespace MangosTEx.ViewModels
         }
         private bool FilterHideUntranslated(LocalizedItem item)
         {
-            return HideUntranslated == false || item.Status != LocalizationStatus.Untranslated;
+            return HideTranslated == false || string.IsNullOrEmpty(item.DatabaseEntity.Name);
         }
         private bool FilterHideMatchingTranslation(LocalizedItem item)
         {
@@ -116,7 +116,7 @@ namespace MangosTEx.ViewModels
                 {
                     // load items from database
                     using (var provider = new MangosProvider())
-                    using (new PerformanceChecker("GetItems"))
+                    using (var pc = new PerformanceChecker("GetItems"))
                     {
                         return provider.GetItems(culture)
                             .Select(o => new LocalizedItem(o))
@@ -151,6 +151,7 @@ namespace MangosTEx.ViewModels
                         {
                             // update translated item
                             item.TranslatedEntity = grabber.GetItem(item.DatabaseEntity.Id);
+                            item.Error = null;
                         }
                         catch (Exception ex)
                         {
@@ -165,16 +166,21 @@ namespace MangosTEx.ViewModels
             CultureInfo culture = Settings.DatabaseCulture;
             Observable.Start(() =>
             {
-                // select valid items and convert them to update database
+                // select items to update and convert them
                 var dbItems = items
-                    .Where(o => string.IsNullOrEmpty(o.Error))
+                    //.Where(o => o.Status == LocalizationStatus.NotEqual)
                     .Select(GetTranslatedDbItem);
+
+                if (dbItems.Any() == false)
+                    return;
 
                 using (var provider = new MangosProvider())
                 {
                     dbItems = provider.UpdateItems(dbItems, culture)
                         .ToList();
                 }
+
+                // refresh updated items
                 items.Join(dbItems, o => o.DatabaseEntity.Id, o => o.Id, (li, dbi) => new { li, dbi })
                     .ToList()
                     .ForEach(o => o.li.DatabaseEntity = o.dbi);

@@ -37,6 +37,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -59,6 +61,7 @@
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Debug\ExceptionViewModel.cs" />
     <Compile Include="Helpers\ClipboardHelper.cs" />
+    <Compile Include="Helpers\FrameworkElementHelpers.cs" />
     <Compile Include="Helpers\VisualTreeHelper.cs" />
     <Compile Include="Interactivity\EventTriggerWithEventArgs.cs" />
     <Compile Include="MarkupExtensions\EnumList.cs" />

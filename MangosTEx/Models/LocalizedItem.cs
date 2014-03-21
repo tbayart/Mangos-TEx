@@ -15,16 +15,18 @@ namespace MangosTEx.Models
         #region Methods
         protected override LocalizationStatus GetStatus()
         {
-            if (DatabaseEntity != null && TranslatedEntity != null
-            && string.IsNullOrEmpty(TranslatedEntity.Name) == false)
+            if (TranslatedEntity == null || string.IsNullOrEmpty(TranslatedEntity.Name) == true)
             {
-                if (DatabaseEntity.Name == TranslatedEntity.Name
-                && DatabaseEntity.Description == TranslatedEntity.Description)
-                    return LocalizationStatus.Equal;
-
-                return LocalizationStatus.NotEqual;
+                if (string.IsNullOrEmpty(DatabaseEntity.Name) == true)
+                    return LocalizationStatus.Untranslated;
+                return LocalizationStatus.Unprocessed;
             }
-            return LocalizationStatus.Untranslated;
+
+            if (DatabaseEntity.Name == TranslatedEntity.Name
+            && DatabaseEntity.Description == TranslatedEntity.Description)
+                return LocalizationStatus.Equal;
+
+            return LocalizationStatus.NotEqual;
         }
         #endregion Methods
     }

@@ -16,6 +16,24 @@ namespace MangosTEx.Services
 {
     public class MangosProvider : IDisposable
     {
+        // localized tables
+        // mangos.creature_ai_texts
+        // mangos.db_script_string
+        // mangos.game_event
+        // mangos.locales_achievement_reward
+        // mangos.locales_creature
+        // mangos.locales_gameobject
+        // mangos.locales_gossip_menu_option
+        // mangos.locales_item
+        // mangos.locales_npc_text
+        // mangos.locales_page_text
+        // mangos.locales_points_of_interest
+        // mangos.locales_quest
+        // mangos.mangos_string
+        // scriptdev2.custom_texts
+        // scriptdev2.script_texts
+        // scriptdev2.custom_texts
+
         #region Fields
         private MangosEntities _context;
         #endregion Fields
@@ -146,44 +164,31 @@ namespace MangosTEx.Services
         /// <returns>updated items from database</returns>
         public IEnumerable<Item> UpdateItems(IEnumerable<Item> items, CultureInfo culture)
         {
-            try
+            using (MangosEntities context = GetContext())
             {
-                using (MangosEntities context = GetContext())
+                var item_templates = items.Join(context.item_template, o => o.Id, o => o.entry, (i, it) => new { it, i });
+                var locales_items = items.Join(context.locales_item, o => o.Id, o => o.entry, (i, li) => new { li, i });
+
+                switch (LocalizationHelper.GetOffset(culture))
                 {
-                    var item_templates = items.Join(context.item_template, o => o.Id, o => o.entry, (i, it) => new { it, i });
-                    var locales_items = items.Join(context.locales_item, o => o.Id, o => o.entry, (i, li) => new { li, i });
-
-                    switch (LocalizationHelper.GetOffset(culture))
-                    {
-                        case 0: item_templates.ToList().ForEach(o => { o.it.name = o.i.Name; o.it.description = o.i.Description; }); break;
-                        case 1: locales_items.ToList().ForEach(o => { o.li.name_loc1 = o.i.Name; o.li.description_loc1 = o.i.Description; }); break;
-                        case 2: locales_items.ToList().ForEach(o => { o.li.name_loc2 = o.i.Name; o.li.description_loc2 = o.i.Description; }); break;
-                        case 3: locales_items.ToList().ForEach(o => { o.li.name_loc3 = o.i.Name; o.li.description_loc3 = o.i.Description; }); break;
-                        case 4: locales_items.ToList().ForEach(o => { o.li.name_loc4 = o.i.Name; o.li.description_loc4 = o.i.Description; }); break;
-                        case 5: locales_items.ToList().ForEach(o => { o.li.name_loc5 = o.i.Name; o.li.description_loc5 = o.i.Description; }); break;
-                        case 6: locales_items.ToList().ForEach(o => { o.li.name_loc6 = o.i.Name; o.li.description_loc6 = o.i.Description; }); break;
-                        case 7: locales_items.ToList().ForEach(o => { o.li.name_loc7 = o.i.Name; o.li.description_loc7 = o.i.Description; }); break;
-                        case 8: locales_items.ToList().ForEach(o => { o.li.name_loc8 = o.i.Name; o.li.description_loc8 = o.i.Description; }); break;
-                        default: throw new NotImplementedException("Unsupported culture " + culture.Name);
-                    }
-
-                    context.SaveChanges();
+                    case 0: item_templates.ToList().ForEach(o => { o.it.name = o.i.Name; o.it.description = o.i.Description; }); break;
+                    case 1: locales_items.ToList().ForEach(o => { o.li.name_loc1 = o.i.Name; o.li.description_loc1 = o.i.Description; }); break;
+                    case 2: locales_items.ToList().ForEach(o => { o.li.name_loc2 = o.i.Name; o.li.description_loc2 = o.i.Description; }); break;
+                    case 3: locales_items.ToList().ForEach(o => { o.li.name_loc3 = o.i.Name; o.li.description_loc3 = o.i.Description; }); break;
+                    case 4: locales_items.ToList().ForEach(o => { o.li.name_loc4 = o.i.Name; o.li.description_loc4 = o.i.Description; }); break;
+                    case 5: locales_items.ToList().ForEach(o => { o.li.name_loc5 = o.i.Name; o.li.description_loc5 = o.i.Description; }); break;
+                    case 6: locales_items.ToList().ForEach(o => { o.li.name_loc6 = o.i.Name; o.li.description_loc6 = o.i.Description; }); break;
+                    case 7: locales_items.ToList().ForEach(o => { o.li.name_loc7 = o.i.Name; o.li.description_loc7 = o.i.Description; }); break;
+                    case 8: locales_items.ToList().ForEach(o => { o.li.name_loc8 = o.i.Name; o.li.description_loc8 = o.i.Description; }); break;
+                    default: throw new NotImplementedException("Unsupported culture " + culture.Name);
                 }
 
-                List<int> ids = items.Select(o => o.Id).ToList();
-                var updatedItems = _context.item_template.Where(o => ids.Contains(o.entry));
-                return GetItems(updatedItems, culture);
+                context.SaveChanges();
             }
-            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
-            {
-                var m1 = ex.EntityValidationErrors.Where(o => o.IsValid == false).ToList();
-                var m2 = m1.SelectMany(o => o.ValidationErrors).ToList();
-                var errorList = m2.Select(o => string.Format("{2}> {0} : {1}", o.PropertyName, o.ErrorMessage, Environment.NewLine)).ToList();
-                var errors = string.Join(string.Empty, errorList);
-                string plural = errorList.Count > 1 ? "Errors" : "Error";
-                string message = string.Format("{0} while updating database :{1}", plural, errors);
-            }
-            return Enumerable.Empty<Item>();
+
+            List<int> ids = items.Select(o => o.Id).ToList();
+            var updatedItems = _context.item_template.Where(o => ids.Contains(o.entry));
+            return GetItems(updatedItems, culture);
         }
         #endregion Items
 

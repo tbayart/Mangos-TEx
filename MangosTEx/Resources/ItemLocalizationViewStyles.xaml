@@ -12,8 +12,8 @@
                 <StackPanel DockPanel.Dock="Left"
                             Orientation="Vertical">
                     <CheckBox HorizontalAlignment="Left"
-                              Content="Hide untranslated items"
-                              IsChecked="{Binding HideUntranslated}" />
+                              Content="Hide translated items"
+                              IsChecked="{Binding HideTranslated}" />
                     <CheckBox HorizontalAlignment="Left"
                               Content="Hide matching translation"
                               IsChecked="{Binding HideMatchingTranslation}" />
@@ -58,7 +58,7 @@
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <uc:StatusIcon />
+                                <uc:StatusIcon ToolTip="{Binding Error}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

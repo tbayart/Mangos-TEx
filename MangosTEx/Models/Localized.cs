@@ -78,6 +78,7 @@ namespace MangosTEx.Models
 
     public enum LocalizationStatus
     {
+        Unprocessed,
         Untranslated,
         Equal,
         NotEqual,

@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:presentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
     <!--Geometry resources-->
+    <StreamGeometry x:Key="GeometryLeftArrow">F1 M0,5 L4,1 4,3 10,3 10,7 4,7 4,9 Z</StreamGeometry>
     <StreamGeometry x:Key="GeometryEqual">F1 M0,0 10,10 M0,2 L10,2 10,4 0,4 Z M0,6 L10,6 10,8 0,8 Z</StreamGeometry>
     <CombinedGeometry x:Key="GeometryNotEqual"
                       Geometry1="{StaticResource GeometryEqual}">
@@ -12,6 +13,24 @@
     <StreamGeometry x:Key="GeometryCross">F1 M8,0 L10,2 7,5 10,8 8,10 5,7 2,10 0,8 3,5 0,2 2,0 5,3 Z</StreamGeometry>
 
     <!--Brush resources-->
+    <DrawingBrush x:Key="BrushLeftArrow"
+                  Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <GeometryDrawing Brush="Black"
+                             Geometry="{StaticResource GeometryLeftArrow}" />
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    <DrawingBrush x:Key="BrushRightArrow"
+                  Stretch="Uniform">
+        <DrawingBrush.RelativeTransform>
+            <ScaleTransform CenterX="0.5" CenterY="0.5"
+                            ScaleX="-1" ScaleY="1" />
+        </DrawingBrush.RelativeTransform>
+        <DrawingBrush.Drawing>
+            <GeometryDrawing Brush="Black"
+                             Geometry="{StaticResource GeometryLeftArrow}" />
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
     <DrawingBrush x:Key="BrushEqual"
                   Stretch="Uniform">
         <DrawingBrush.Drawing>
