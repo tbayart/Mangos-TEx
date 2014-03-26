@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.EntityClient;
+using System.Data.Entity.Core.EntityClient;
 using System.Globalization;
 using System.Linq;
 using System.Security;

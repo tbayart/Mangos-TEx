@@ -109,6 +109,7 @@ namespace MangosTEx.ViewModels
         {
             base.InitializeCommands();
             UpdateConnexionStatusCommand = new DelegateCommand(() => UpdateConnexionStatusExecute());
+            CopyConnexionStatusToClipboardCommand = new DelegateCommand(CopyConnexionStatusToClipboardExecute);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
         }
 
@@ -122,6 +123,12 @@ namespace MangosTEx.ViewModels
             Observable.Start(() => MangosTEx.Services.MangosProvider.CheckDatabaseAccess())
                 .ObserveOnDispatcher()
                 .Subscribe(result => ConnectionStatus = result);
+        }
+
+        public ICommand CopyConnexionStatusToClipboardCommand { get; private set; }
+        private void CopyConnexionStatusToClipboardExecute()
+        {
+            ClipboardHelper.SafeSetClipboardDataObject(ConnectionStatus.Message);
         }
 
         public ICommand OpenSettingsCommand { get; private set; }

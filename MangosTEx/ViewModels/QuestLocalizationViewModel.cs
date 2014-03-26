@@ -8,6 +8,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using ApiCommon;
+using ApiCommon.Interfaces;
 using Framework.Commands;
 using Framework.Debug;
 using Framework.MVVM;
@@ -143,7 +145,8 @@ namespace MangosTEx.ViewModels
         private void GetLocalesAsync(IEnumerable<LocalizedQuest> items)
         {
             CultureInfo culture = Settings.LocalizationCulture;
-            var grabber = new WowheadClient(culture);
+            IDataProvider provider = DataProviderManager.GetSimpleHttpProvider();
+            var grabber = new WowheadClient(provider, culture);
             Observable.Start(() =>
                 Parallel.ForEach(items, item =>
                     {

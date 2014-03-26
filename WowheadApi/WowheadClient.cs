@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Framework.Helpers;
 using Framework.MVVM;
+using ApiCommon.Interfaces;
 using WowheadApi.Grabbers;
 using WowheadApi.Models;
 
@@ -38,14 +39,11 @@ namespace WowheadApi
         #endregion Fields
 
         #region Ctor
-        public WowheadClient()
-            : this(LocalizationHelper.DefaultCulture)
+        public WowheadClient(IDataProvider dataProvider, CultureInfo locale = null)
         {
-        }
-
-        public WowheadClient(CultureInfo locale)
-        {
-            CurrentLocale = locale;
+            System.Diagnostics.Debug.Assert(dataProvider != null, "DataProvider not set");
+            DataProvider = dataProvider;
+            CurrentLocale = locale ?? LocalizationHelper.DefaultCulture;
         }
         #endregion Ctor
 
@@ -61,6 +59,8 @@ namespace WowheadApi
             }
         }
         private CultureInfo _currentLocale;
+
+        public IDataProvider DataProvider { get; set; }
         #endregion Properties
 
         #region Private Methods
@@ -74,7 +74,7 @@ namespace WowheadApi
         private string GetData(string type, int id)
         {
             string address = string.Format(_baseQuery, type, id);
-            return WebRequestHelpers.DownloadString(address);
+            return DataProvider.ProvideData(address);
         }
 
         private T Get<T, G>(string type, int id)

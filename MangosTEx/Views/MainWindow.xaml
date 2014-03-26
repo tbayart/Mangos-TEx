@@ -27,21 +27,25 @@
                 </i:Interaction.Triggers>
             </TextBlock>
             <TextBlock DockPanel.Dock="Left"
-                       DataContext="{Binding ConnectionStatus}"
                        FontWeight="Bold"
-                       ToolTip="{Binding Message}">
+                       ToolTip="{Binding ConnectionStatus.Message}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding CopyConnexionStatusToClipboardCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding ConnectionStatus}" Value="{x:Null}">
                                 <Setter Property="Text" Value="Checking..." />
                                 <Setter Property="Foreground" Value="Orange" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding IsValid}" Value="True">
+                            <DataTrigger Binding="{Binding ConnectionStatus.IsValid}" Value="True">
                                 <Setter Property="Text" Value="Connected" />
                                 <Setter Property="Foreground" Value="DarkGreen" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding IsValid}" Value="False">
+                            <DataTrigger Binding="{Binding ConnectionStatus.IsValid}" Value="False">
                                 <Setter Property="Text" Value="Error!" />
                                 <Setter Property="Foreground" Value="Red" />
                             </DataTrigger>

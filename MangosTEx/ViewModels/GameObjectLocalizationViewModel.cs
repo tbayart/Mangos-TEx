@@ -12,6 +12,8 @@ using dbGameObject = MangosTEx.Services.Models.GameObject;
 using dbPageText = MangosTEx.Services.Models.PageText;
 using whGameObject = WowheadApi.Models.GameObject;
 using whBookPage = WowheadApi.Models.BookPage;
+using ApiCommon;
+using ApiCommon.Interfaces;
 
 namespace MangosTEx.ViewModels
 {
@@ -75,9 +77,10 @@ namespace MangosTEx.ViewModels
         private void GetGameObjectsLocales(IEnumerable<MangosTEx.Services.Models.GameObject> gameObjects)
         {
             CultureInfo culture = Settings.LocalizationCulture;
+            IDataProvider provider = DataProviderManager.GetSimpleHttpProvider();
             Parallel.ForEach(gameObjects, go =>
             {
-                var grabber = new WowheadClient(culture);
+                var grabber = new WowheadClient(provider, culture);
                 try
                 {
                     var loc = grabber.GetGameObject(go.Id);
