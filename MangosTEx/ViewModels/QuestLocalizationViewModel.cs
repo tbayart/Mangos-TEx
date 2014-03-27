@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using ApiCommon;
-using ApiCommon.Interfaces;
 using Framework.Commands;
 using Framework.Debug;
 using Framework.MVVM;
 using MangosTEx.Models;
 using MangosTEx.Services;
+using MangosTEx.Services.ApiDataProvider;
 using WowheadApi;
 using dbQuest = MangosTEx.Services.Models.Quest;
 

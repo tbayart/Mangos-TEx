@@ -4,16 +4,15 @@ using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using ApiCommon;
 using Framework.MVVM;
 using MangosTEx.Events;
 using MangosTEx.Services;
+using MangosTEx.Services.ApiDataProvider;
 using WowheadApi;
 using dbGameObject = MangosTEx.Services.Models.GameObject;
 using dbPageText = MangosTEx.Services.Models.PageText;
-using whGameObject = WowheadApi.Models.GameObject;
 using whBookPage = WowheadApi.Models.BookPage;
-using ApiCommon;
-using ApiCommon.Interfaces;
 
 namespace MangosTEx.ViewModels
 {

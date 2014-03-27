@@ -18,6 +18,8 @@ namespace MangosTEx.Services.ViewModels
         #endregion Ctor
 
         #region Properties
+        public string DisplayName { get { return "Connection settings"; } }
+
         public string DatabaseHost
         {
             get { return _databaseHost; }

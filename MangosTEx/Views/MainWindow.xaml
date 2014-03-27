@@ -22,7 +22,7 @@
                        ToolTip="Click to update">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding UpdateConnexionStatusCommand}" />
+                        <i:InvokeCommandAction Command="{Binding UpdateConnectionStatusCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </TextBlock>
@@ -31,7 +31,7 @@
                        ToolTip="{Binding ConnectionStatus.Message}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding CopyConnexionStatusToClipboardCommand}" />
+                        <i:InvokeCommandAction Command="{Binding CopyConnectionStatusToClipboardCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <TextBlock.Style>
@@ -41,11 +41,11 @@
                                 <Setter Property="Text" Value="Checking..." />
                                 <Setter Property="Foreground" Value="Orange" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding ConnectionStatus.IsValid}" Value="True">
+                            <DataTrigger Binding="{Binding ConnectionStatus.IsOk}" Value="True">
                                 <Setter Property="Text" Value="Connected" />
                                 <Setter Property="Foreground" Value="DarkGreen" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding ConnectionStatus.IsValid}" Value="False">
+                            <DataTrigger Binding="{Binding ConnectionStatus.IsOk}" Value="False">
                                 <Setter Property="Text" Value="Error!" />
                                 <Setter Property="Foreground" Value="Red" />
                             </DataTrigger>

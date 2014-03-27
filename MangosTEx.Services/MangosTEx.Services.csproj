@@ -91,6 +91,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ApiDataProvider\DataProviderManager.cs" />
+    <Compile Include="ApiDataProvider\HttpCachedProvider.cs" />
+    <Compile Include="ApiDataProvider\SimpleHttpProvider.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -105,6 +108,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApiCommon\ApiCommon.csproj">
+      <Project>{0275ed96-42b0-4ef4-9bb3-b323b4e7d3ea}</Project>
+      <Name>ApiCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Framework.UI\Framework.UI.csproj">
       <Project>{85dab6b3-dd72-46ec-96f8-d8126da64d8f}</Project>
       <Name>Framework.UI</Name>
@@ -116,6 +123,10 @@
     <ProjectReference Include="..\MangosData\MangosData.csproj">
       <Project>{351de1f0-fa80-4587-811a-52568f8667f3}</Project>
       <Name>MangosData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangosTExData\MangosTExData.csproj">
+      <Project>{62a6dbfe-2413-4fbe-8f19-e6ff8f86ba17}</Project>
+      <Name>MangosTExData</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

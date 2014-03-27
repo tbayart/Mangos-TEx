@@ -51,6 +51,7 @@
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="InstanceProvider\InstanceProviderBase.cs" />
     <Compile Include="Interfaces\ISelectable.cs" />
+    <Compile Include="Interfaces\IStatusMessage.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\ServiceProvider.cs" />
     <Compile Include="ViewModels\IViewModel.cs" />

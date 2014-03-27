@@ -1,14 +1,16 @@
-﻿namespace MangosTEx.Services.Models
+﻿using Framework.Interfaces;
+
+namespace MangosTEx.Services.Models
 {
-    public class ConnectionStatus
+    public class ConnectionStatus : IStatusMessage
     {
-        public ConnectionStatus(bool isValid, string message)
+        public ConnectionStatus(bool isOk, string message)
         {
-            IsValid = isValid;
+            IsOk = isOk;
             Message = message;
         }
 
-        public bool IsValid { get; private set; }
+        public bool IsOk { get; private set; }
         public string Message { get; private set; }
     }
 }

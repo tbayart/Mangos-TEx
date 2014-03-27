@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using ApiCommon;
-using ApiCommon.Interfaces;
 using Framework.Commands;
 using Framework.Debug;
 using Framework.MVVM;
 using MangosTEx.Models;
 using MangosTEx.Services;
+using MangosTEx.Services.ApiDataProvider;
 using WowheadApi;
 using dbItem = MangosTEx.Services.Models.Item;
 
@@ -145,7 +145,7 @@ namespace MangosTEx.ViewModels
         private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items)
         {
             CultureInfo culture = Settings.LocalizationCulture;
-            IDataProvider provider = DataProviderManager.GetSimpleHttpProvider();
+            IDataProvider provider = DataProviderManager.GetHttpCachedProvider();
             var grabber = new WowheadClient(provider, culture);
             Observable.Start(() =>
                 Parallel.ForEach(items, item =>

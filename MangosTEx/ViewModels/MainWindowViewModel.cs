@@ -1,22 +1,10 @@
 using System;
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.Net;
-using System.Windows.Input;
-using Framework.Helpers;
-using System.Globalization;
-using Framework.Commands;
-using Framework.MVVM;
 using System.Collections.Generic;
-using System.Xml;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using Framework;
-using WowheadApi;
 using System.Reactive.Linq;
-using MangosTEx.Events;
-using Framework.Debug;
+using System.Windows.Input;
+using Framework.Commands;
+using Framework.Helpers;
+using Framework.MVVM;
 using Framework.Services;
 using MangosTEx.Services.ViewModels;
 
@@ -41,7 +29,7 @@ namespace MangosTEx.ViewModels
             //WowheadApi.Models.GameObject obj2 = grabber.GetGameObject(191656);
 
             SettingsViewModel.ApplyProxySettings();
-            UpdateConnexionStatusExecute(true);
+            UpdateConnectionStatusExecute(true);
         }
         #endregion Ctor
 
@@ -108,13 +96,13 @@ namespace MangosTEx.ViewModels
         protected override void InitializeCommands()
         {
             base.InitializeCommands();
-            UpdateConnexionStatusCommand = new DelegateCommand(() => UpdateConnexionStatusExecute());
-            CopyConnexionStatusToClipboardCommand = new DelegateCommand(CopyConnexionStatusToClipboardExecute);
+            UpdateConnectionStatusCommand = new DelegateCommand(() => UpdateConnectionStatusExecute());
+            CopyConnectionStatusToClipboardCommand = new DelegateCommand(CopyConnectionStatusToClipboardExecute);
             OpenSettingsCommand = new DelegateCommand(OpenSettingsExecute);
         }
 
-        public ICommand UpdateConnexionStatusCommand { get; private set; }
-        private void UpdateConnexionStatusExecute(bool forceUpdate = false)
+        public ICommand UpdateConnectionStatusCommand { get; private set; }
+        private void UpdateConnectionStatusExecute(bool forceUpdate = false)
         {
             if (ConnectionStatus == null && forceUpdate == false)
                 return;
@@ -125,8 +113,8 @@ namespace MangosTEx.ViewModels
                 .Subscribe(result => ConnectionStatus = result);
         }
 
-        public ICommand CopyConnexionStatusToClipboardCommand { get; private set; }
-        private void CopyConnexionStatusToClipboardExecute()
+        public ICommand CopyConnectionStatusToClipboardCommand { get; private set; }
+        private void CopyConnectionStatusToClipboardExecute()
         {
             ClipboardHelper.SafeSetClipboardDataObject(ConnectionStatus.Message);
         }
@@ -136,7 +124,7 @@ namespace MangosTEx.ViewModels
         {
             SettingsViewModel settings = ViewModelProvider.GetInstance<SettingsViewModel>();
             ServiceProvider.GetInstance<InteractionService>().ShowContent(settings);
-            UpdateConnexionStatusCommand.Execute(null);
+            UpdateConnectionStatusCommand.Execute(null);
         }
         #endregion Commands
     }

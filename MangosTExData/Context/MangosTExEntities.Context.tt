@@ -2,7 +2,7 @@
 <#@ include file="EF.Utility.CS.ttinclude"#><#@
  output extension=".cs"#><#
 
-const string inputFile = @"MangosModel.edmx";
+const string inputFile = @"MangosTExModel.edmx";
 var textTransform = DynamicTextTransformation.Create(this);
 var code = new CodeGenerationTools(this);
 var ef = new MetadataTools(this);
@@ -57,7 +57,7 @@ using System.Linq;
 <#=Accessibility.ForType(container)#> partial class <#=code.Escape(container)#> : DbContext
 {
     public <#=code.Escape(container)#>()
-        : this("name=<#=container.Name#>")
+        : base("name=<#=container.Name#>")
     {
 <#
 if (!loader.IsLazyLoadingEnabled(container))

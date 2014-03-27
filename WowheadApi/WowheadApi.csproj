@@ -61,7 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApiCommon\ApiCommon.csproj">
-      <Project>{ad19965d-370b-4d80-9a35-9c7d415a791f}</Project>
+      <Project>{0275ed96-42b0-4ef4-9bb3-b323b4e7d3ea}</Project>
       <Name>ApiCommon</Name>
     </ProjectReference>
     <ProjectReference Include="..\Framework\Framework.csproj">
