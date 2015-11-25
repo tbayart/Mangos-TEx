@@ -75,6 +75,17 @@ namespace MangosTEx.Services.ViewModels
         }
         private SecureString _databasePassword;
 
+        public string BattleNetApiKey
+        {
+            get { return _battleNetApiKey; }
+            set
+            {
+                _battleNetApiKey = value;
+                RaisePropertyChanged(() => BattleNetApiKey);
+            }
+        }
+        private string _battleNetApiKey;
+
         public bool UseProxy
         {
             get { return _useProxy; }
@@ -152,6 +163,7 @@ namespace MangosTEx.Services.ViewModels
             DatabaseName = Settings.DatabaseName;
             DatabaseUsername = Settings.DatabaseUsername;
             DatabasePassword = MangosProvider.Decrypt(Settings.DatabasePassword);
+            BattleNetApiKey = Settings.BattleNetApiKey;
             UseProxy = Settings.UseProxy;
             ProxyAddress = Settings.ProxyAddress;
             ProxyPort = Settings.ProxyPort;
@@ -167,6 +179,7 @@ namespace MangosTEx.Services.ViewModels
             Settings.DatabaseName = DatabaseName;
             Settings.DatabaseUsername = DatabaseUsername;
             Settings.DatabasePassword = MangosProvider.Encrypt(DatabasePassword);
+            Settings.BattleNetApiKey = BattleNetApiKey;
             Settings.UseProxy = UseProxy;
             Settings.ProxyAddress = ProxyAddress;
             Settings.ProxyPort = ProxyPort;
@@ -200,6 +213,11 @@ namespace MangosTEx.Services.ViewModels
                 }
             }
             System.Net.WebRequest.DefaultWebProxy = proxy;
+        }
+
+        public static string GetBattleNetApiKey()
+        {
+            return Settings.BattleNetApiKey;
         }
         #endregion Static Methods
 

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Debug\PerformanceChecker.cs" />
     <Compile Include="Event\EventArgs.cs" />
+    <Compile Include="Helpers\IEnumerableHelpers.cs" />
     <Compile Include="Helpers\ICollectionHelpers.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />

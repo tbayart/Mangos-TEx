@@ -60,7 +60,7 @@
                                         UpdateSourceTrigger=PropertyChanged}" />
                     </GroupBox>
                     <GroupBox BorderThickness="0"
-                                Header="Database Password">
+                              Header="Database Password">
                         <PasswordBox>
                             <i:Interaction.Behaviors>
                                 <bhv:PasswordBoxBinder SecurePassword="{Binding DatabasePassword,
@@ -69,8 +69,14 @@
                         </PasswordBox>
                     </GroupBox>
                 </UniformGrid>
+                <UniformGrid Rows="1">
+                    <GroupBox Header="Battle.net api key">
+                        <TextBox Text="{Binding BattleNetApiKey,
+                                        UpdateSourceTrigger=PropertyChanged}" />
+                    </GroupBox>
+                </UniformGrid>
             </UniformGrid>
-            <GroupBox DockPanel.Dock="Top"
+                <GroupBox DockPanel.Dock="Top"
                       BorderThickness="1"
                       Margin="5,0">
                 <GroupBox.Header>

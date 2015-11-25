@@ -1,0 +1,116 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+                    xmlns:vm="clr-namespace:MangosTEx.ViewModels"
+                    xmlns:fwki="http://Framework/Interactivity"
+                    xmlns:uc="clr-namespace:MangosTEx.UserControls">
+    <ControlTemplate x:Key="BattleNetGridTemplate">
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Top"
+                       LastChildFill="False">
+                <StackPanel DockPanel.Dock="Left"
+                            Orientation="Vertical">
+                    <ComboBox HorizontalAlignment="Left"
+                              ItemsSource="{Binding ListDataType}"
+                              SelectedItem="{Binding SelectedDataType}"
+                              DisplayMemberPath="Item1" />
+                    <CheckBox HorizontalAlignment="Left"
+                              Content="Hide translated items"
+                              IsChecked="{Binding HideTranslated}" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right"
+                            Orientation="Vertical">
+                    <Button Margin="2"
+                            Content="Localize select items"
+                            Command="{Binding UpdateLocalizationCommand}"
+                            CommandParameter="{Binding SelectedItems, ElementName=ItemsDataGrid}" />
+                </StackPanel>
+            </DockPanel>
+            <StackPanel DockPanel.Dock="Bottom"
+                        Orientation="Horizontal">
+                <TextBlock Text="{Binding Data.SourceCollection.Count,
+                                  StringFormat='{}total : {0} items'}" />
+                <TextBlock Text="/"
+                           Margin="5,0" />
+                <TextBlock Text="{Binding Data.Count,
+                                  StringFormat='{}in view : {0} items'}" />
+                <TextBlock Text="/"
+                           Margin="5,0" />
+                <TextBlock Text="{Binding SelectedItems.Count,
+                                  ElementName=ItemsDataGrid,
+                                  StringFormat='{}selected : {0} items'}" />
+            </StackPanel>
+            <DataGrid x:Name="ItemsDataGrid"
+                      ItemsSource="{Binding Data}"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      CanUserResizeRows="False"
+                      EnableRowVirtualization="True">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <uc:StatusIcon ToolTip="{Binding Error}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Item Id"
+                                        Width="Auto"
+                                        Binding="{Binding ItemId}"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Query"
+                                        Width="1*"
+                                        Binding="{Binding Query}"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Data"
+                                        Width="2*"
+                                        Binding="{Binding Data}"
+                                        IsReadOnly="True">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="ToolTip" Value="{Binding Data}" />
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BattleNetLoadingTemplate">
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <TextBlock Text="Loading data from database" />
+            <TextBlock>
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard Storyboard="{StaticResource LoadingStoryboard}" />
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </StackPanel>
+    </ControlTemplate>
+
+    <Style x:Key="BattleNetGridStyle"
+           TargetType="Control">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Data, Converter={StaticResource IsNullConverter}}"
+                         Value="True">
+                <Setter Property="Template"
+                        Value="{StaticResource BattleNetLoadingTemplate}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Data, Converter={StaticResource IsNullConverter}}"
+                         Value="False">
+                <Setter Property="Template"
+                        Value="{StaticResource BattleNetGridTemplate}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate DataType="{x:Type vm:BattleNetLocalizationViewModel}">
+        <Control Style="{StaticResource BattleNetGridStyle}" />
+    </DataTemplate>
+</ResourceDictionary>

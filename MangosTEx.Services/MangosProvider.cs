@@ -30,6 +30,8 @@ namespace MangosTEx.Services
         // mangos.locales_points_of_interest
         // mangos.locales_quest
         // mangos.mangos_string
+
+            // *obsolete with rel21*
         // scriptdev2.custom_texts
         // scriptdev2.script_texts
         // scriptdev2.custom_texts

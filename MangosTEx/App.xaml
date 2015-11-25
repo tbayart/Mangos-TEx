@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="Resources/ItemLocalizationViewStyles.xaml" />
                 <ResourceDictionary Source="Resources/GameObjectLocalizationViewStyles.xaml" />
                 <ResourceDictionary Source="Resources/QuestLocalizationViewStyles.xaml" />
+                <ResourceDictionary Source="Resources/BattleNetLocalizationViewStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

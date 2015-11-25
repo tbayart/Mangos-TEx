@@ -45,7 +45,7 @@ namespace MangosTEx.ViewModels
             }
         }
 
-        private IEnumerable<string> _tabList = new List<string> { "Home", "Items", "Game objects", "Quests" };
+        private IEnumerable<string> _tabList = new List<string> { "Home", "Items", "Game Objects", "Quests", "BattleNet" };
         public IEnumerable<string> TabList { get { return _tabList; } }
 
         public string CurrentTab
@@ -78,16 +78,26 @@ namespace MangosTEx.ViewModels
 
             if (propertyName == GetPropertyName(() => CurrentTab))
             {
-                if (CurrentTab == "Home")
-                    DataViewModel = ViewModelProvider.GetInstance<HomeViewModel>();
-                else if (CurrentTab == "Items")
-                    DataViewModel = ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
-                else if (CurrentTab == "Game Objects")
-                    DataViewModel = ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();
-                else if (CurrentTab == "Quests")
-                    DataViewModel = ViewModelProvider.GetInstance<QuestLocalizationViewModel>();
-                else
-                    DataViewModel = null;
+                DataViewModel = GetCurrentTabViewModel();
+            }
+        }
+
+        private IViewModel GetCurrentTabViewModel()
+        {
+            switch (CurrentTab)
+            {
+                case "Home":
+                    return ViewModelProvider.GetInstance<HomeViewModel>();
+                case "Items":
+                    return ViewModelProvider.GetInstance<ItemLocalizationViewModel>();
+                case "Game Objects":
+                    return ViewModelProvider.GetInstance<GameObjectLocalizationViewModel>();
+                case "Quests":
+                    return ViewModelProvider.GetInstance<QuestLocalizationViewModel>();
+                case "BattleNet":
+                    return ViewModelProvider.GetInstance<BattleNetLocalizationViewModel>();
+                default:
+                    return null;
             }
         }
         #endregion Methods
