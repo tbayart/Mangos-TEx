@@ -55,6 +55,11 @@ namespace MangosTEx.Models
         #endregion Properties
 
         #region Methods
+        public void ResetStatus()
+        {
+            Status = LocalizationStatus.Unprocessed;
+        }
+
         protected abstract LocalizationStatus GetStatus();
 
         private void UpdateStatusInternal()

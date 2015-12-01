@@ -140,11 +140,14 @@ namespace MangosTEx.Services.ApiDataProvider
                 var cachedData = provider.dataprovidercache.AsNoTracking()
                     .FirstOrDefault(o => o.source == source);
 
-                if (cachedData == null)
+                if (cachedData == null || string.IsNullOrEmpty(cachedData.data))
                 {
                     cachedData = CacheData(source);
-                    provider.dataprovidercache.Add(cachedData);
-                    provider.SaveChanges();
+                    if (string.IsNullOrEmpty(cachedData.data) == false)
+                    {
+                        provider.dataprovidercache.Add(cachedData);
+                        provider.SaveChanges();
+                    }
                 }
                 return cachedData.data;
             }

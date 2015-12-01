@@ -21,25 +21,29 @@ namespace WowheadApi.Grabbers
         {
             for (node = node.NextSibling;
                 node != null && node.Name != name;
-                node = node.NextSibling) ;
+                node = node.NextSibling)
+                ;
             return node;
         }
 
         private string GetTextFromH3(HtmlNode node)
         {
             string result = string.Empty;
-            HtmlNode endNode = NextNode(node, "h3");
-            while (node.NextSibling != endNode)
+            if (node != null)
             {
-                node = node.NextSibling;
-                switch (node.Name)
+                HtmlNode endNode = NextNode(node, "h3");
+                while (node.NextSibling != endNode)
                 {
-                    case "br":
-                        result += "$B";
-                        break;
-                    default:
-                        result += node.InnerText;
-                        break;
+                    node = node.NextSibling;
+                    switch (node.Name)
+                    {
+                        case "br":
+                            result += "$B";
+                            break;
+                        default:
+                            result += node.InnerText;
+                            break;
+                    }
                 }
             }
             return CleanText(result);
@@ -99,7 +103,7 @@ namespace WowheadApi.Grabbers
             node = NextNode(node, "h3");
             result.Details = GetTextFromH3(node);
             // remaining data
-            for (; ; )
+            for (; node != null;)
             {
                 node = NextNode(node, "h3");
                 if (node == null)

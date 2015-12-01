@@ -1,14 +1,15 @@
 ﻿using Framework.MVVM;
+using MangosTEx.Services.Models;
 
 namespace MangosTEx.Models
 {
-    public class LocalizedItem : Localized<MangosTEx.Services.Models.Item, WowheadApi.Models.Item>
+    public class LocalizedItem : Localized<Item, Item>
     {
         #region Ctor
-        public LocalizedItem(MangosTEx.Services.Models.Item databaseItem)
+        public LocalizedItem(Item databaseItem)
         {
             DatabaseEntity = databaseItem;
-            TranslatedEntity = new WowheadApi.Models.Item { Id = databaseItem.Id };
+            TranslatedEntity = new Item { Id = databaseItem.Id };
         }
         #endregion Ctor
 

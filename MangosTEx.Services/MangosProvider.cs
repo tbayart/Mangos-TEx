@@ -31,7 +31,7 @@ namespace MangosTEx.Services
         // mangos.locales_quest
         // mangos.mangos_string
 
-            // *obsolete with rel21*
+        // *obsolete with rel21*
         // scriptdev2.custom_texts
         // scriptdev2.script_texts
         // scriptdev2.custom_texts
@@ -290,6 +290,13 @@ namespace MangosTEx.Services
             return GetQuests(updatedQuests, culture);
         }
         #endregion Quests
+
+        #region Achievements
+        public IEnumerable<Achievement> GetAchievements(CultureInfo culture)
+        {
+            return _context.achievement_reward.Select(o => new Achievement { Id = o.entry, Subject = o.subject, Text = o.text });
+        }
+        #endregion Achievements
 
         #region IDisposable
         protected virtual void Dispose(bool disposing)

@@ -14,7 +14,7 @@
                     <ComboBox HorizontalAlignment="Left"
                               ItemsSource="{Binding ListDataType}"
                               SelectedItem="{Binding SelectedDataType}"
-                              DisplayMemberPath="Item1" />
+                              DisplayMemberPath="Libelle" />
                     <CheckBox HorizontalAlignment="Left"
                               Content="Hide translated items"
                               IsChecked="{Binding HideTranslated}" />

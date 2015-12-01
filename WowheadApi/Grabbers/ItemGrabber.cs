@@ -112,11 +112,30 @@ namespace WowheadApi.Grabbers
                 .Select(o => CleanupLabel(o.InnerText))
                 .FirstOrDefault();
 
+            tables = tables.Skip(1).ToList();
             if (tables.Any())
             {
-                // description is in last table and in a <span class="q"> node; again, q can be followed by a number
-                var descNodes = tables.Last().Descendants("span").Where(isClass_q_Node);
-                var qnode = descNodes.FirstOrDefault(o => o.Attributes["class"].Value == "q")
+                var descs = tables
+                    .Select(o => o.Descendants("span").Where(d => isClass_q_Node(d) && d.ParentNode.Name == "td"))
+                    .Select(o => o.FirstOrDefault(isClass_q_Node) ?? o.FirstOrDefault())
+                    .Where(o => o != null)
+                    .Select(o => o.Descendants("a").FirstOrDefault() ?? o)
+                    .Select(o =>
+                        {
+                            // remove comments
+                            var comments = o.ChildNodes.OfType<HtmlCommentNode>().ToList();
+                            foreach (var c in comments)
+                                o.ChildNodes.Remove(c);
+                            return CleanupDescription(o.InnerText);
+                        })
+                    .ToList();
+
+                if (descs.Any())
+                    item.Description = string.Join(Environment.NewLine, descs);
+/*
+                // description is in next table and in a <span class="q"> node; again, q can be followed by a number
+                var descNodes = tables.Skip(1).First().Descendants("span").Where(isClass_q_Node);
+                var qnode = descNodes.FirstOrDefault(isClass_q_Node)
                     ?? descNodes.FirstOrDefault(); // if we can't find a class="q" span node, we take the first
 
                 if (qnode != null)
@@ -130,6 +149,7 @@ namespace WowheadApi.Grabbers
                     // and finally, extract the description
                     item.Description = CleanupDescription(qnode.InnerText);
                 }
+*/
             }
 
             return item;

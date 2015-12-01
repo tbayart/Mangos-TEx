@@ -15,8 +15,8 @@ using Framework.MVVM;
 using MangosTEx.Models;
 using MangosTEx.Services;
 using MangosTEx.Services.ApiDataProvider;
-using WowheadApi;
 using dbItem = MangosTEx.Services.Models.Item;
+using Framework.Services;
 
 namespace MangosTEx.ViewModels
 {
@@ -25,6 +25,7 @@ namespace MangosTEx.ViewModels
         #region Ctor
         public ItemLocalizationViewModel()
         {
+            SelectedLocalizationSource = LocalizationSourceList.First();
             SetCollectionView(null);
             LoadItemsAsync();
         }
@@ -68,6 +69,22 @@ namespace MangosTEx.ViewModels
             }
         }
         private bool _showErrorOnly;
+
+        public IEnumerable<string> LocalizationSourceList { get { return _localizationSourceList; } }
+        private const string _localizationSourceBattleNet = "BattleNet";
+        private const string _localizationSourceWowhead = "Wowhead";
+        private IEnumerable<string> _localizationSourceList = new string[] { _localizationSourceWowhead, _localizationSourceBattleNet };
+
+        public string SelectedLocalizationSource
+        {
+            get { return _selectedLocalizationSource; }
+            set
+            {
+                _selectedLocalizationSource = value;
+                RaisePropertyChanged(nameof(SelectedLocalizationSource));
+            }
+        }
+        private string _selectedLocalizationSource;
 
         private Properties.Settings Settings { get { return Properties.Settings.Default; } }
         #endregion Properties
@@ -142,18 +159,56 @@ namespace MangosTEx.ViewModels
             throw ex;
         }
 
-        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items)
+        private void GetItemsLocalesAsync(IEnumerable<LocalizedItem> items, LocalizationSource localizationSource)
         {
             CultureInfo culture = Settings.LocalizationCulture;
             IDataProvider provider = DataProviderManager.GetHttpCachedProvider();
-            var grabber = new WowheadClient(provider, culture);
+
+            Func<int, dbItem> grabItem = null;
+            object grabber;
+            if (localizationSource == LocalizationSource.Wowhead)
+            {
+                grabber = new WowheadApi.WowheadClient(provider, culture);
+                grabItem = (id) =>
+                    {
+                        var data = ((WowheadApi.WowheadClient)grabber).GetItem(id);
+                        var item = new dbItem { Id = id };
+                        if (data != null)
+                        {
+                            item.Name = data.Name;
+                            if (string.IsNullOrEmpty(data.Description) == false)
+                                item.Description = data.Description;
+                        }
+                        return item;
+                    };
+            }
+            else if (localizationSource == LocalizationSource.BattleNet)
+            {
+                var apiKey = Services.ViewModels.SettingsViewModel.GetBattleNetApiKey();
+                grabber = new WowApi.WowApiClient(provider, culture, apiKey);
+                grabItem = (id) =>
+                    {
+                        var data = ((WowApi.WowApiClient)grabber).GetItem(id);
+                        var item = new dbItem { Id = id };
+                        if (data != null)
+                        {
+                            item.Name = data.Name;
+                            if (string.IsNullOrEmpty(data.Description) == false)
+                                item.Description = data.Description;
+                        }
+                        return item;
+                    };
+            }
+
+            Parallel.ForEach(items, item => item.ResetStatus());
+
             Observable.Start(() =>
                 Parallel.ForEach(items, item =>
                     {
                         try
                         {
                             // update translated item
-                            item.TranslatedEntity = grabber.GetItem(item.DatabaseEntity.Id);
+                            item.TranslatedEntity = grabItem(item.DatabaseEntity.Id);
                             item.Error = null;
                         }
                         catch (Exception ex)
@@ -171,7 +226,8 @@ namespace MangosTEx.ViewModels
             {
                 // select items to update and convert them
                 var dbItems = items
-                    //.Where(o => o.Status == LocalizationStatus.NotEqual)
+                    .Where(o => o.DatabaseEntity != null && string.IsNullOrEmpty(o.DatabaseEntity.Name) == false
+                                && o.TranslatedEntity != null && string.IsNullOrEmpty(o.TranslatedEntity.Name) == false)
                     .Select(GetTranslatedDbItem);
 
                 if (dbItems.Any() == false)
@@ -186,18 +242,22 @@ namespace MangosTEx.ViewModels
                 // refresh updated items
                 items.Join(dbItems, o => o.DatabaseEntity.Id, o => o.Id, (li, dbi) => new { li, dbi })
                     .ToList()
-                    .ForEach(o => o.li.DatabaseEntity = o.dbi);
+                    .ForEach(o =>
+                        {
+                            o.li.Error = null;
+                            o.li.DatabaseEntity = o.dbi;
+                        });
             });
         }
 
         private dbItem GetTranslatedDbItem(LocalizedItem item)
         {
             return new dbItem
-                {
-                    Id = item.TranslatedEntity.Id,
-                    Name = item.TranslatedEntity.Name,
-                    Description = item.TranslatedEntity.Description
-                };
+            {
+                Id = item.TranslatedEntity.Id,
+                Name = item.TranslatedEntity.Name,
+                Description = item.TranslatedEntity.Description
+            };
         }
         #endregion Methods
 
@@ -205,17 +265,19 @@ namespace MangosTEx.ViewModels
         protected override void InitializeCommands()
         {
             base.InitializeCommands();
-            UpdateLocalizationCommand = new DelegateCommand<IList>(UpdateLocalizationExecute);
+            UpdateLocalizationWowheadCommand = new DelegateCommand<IList>(o => UpdateLocalizationExecute(o, LocalizationSource.Wowhead));
+            UpdateLocalizationBattleNetCommand = new DelegateCommand<IList>(o => UpdateLocalizationExecute(o, LocalizationSource.BattleNet));
             UpdateDatabaseCommand = new DelegateCommand<IList>(UpdateDatabaseExecute);
         }
 
-        public ICommand UpdateLocalizationCommand { get; private set; }
-        private void UpdateLocalizationExecute(IList selection)
+        public ICommand UpdateLocalizationWowheadCommand { get; private set; }
+        public ICommand UpdateLocalizationBattleNetCommand { get; private set; }
+        private void UpdateLocalizationExecute(IList selection, LocalizationSource localizationSource)
         {
             // retrieve selection with the right Type and create a copy
             var items = selection.OfType<LocalizedItem>().ToList();
             // then launch item translation process
-            GetItemsLocalesAsync(items);
+            GetItemsLocalesAsync(items, localizationSource);
         }
 
         public ICommand UpdateDatabaseCommand { get; set; }

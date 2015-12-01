@@ -7,10 +7,15 @@
                     xmlns:uc="clr-namespace:MangosTEx.UserControls">
     <ControlTemplate x:Key="ItemsGridTemplate">
         <DockPanel LastChildFill="True">
-            <DockPanel DockPanel.Dock="Top"
-                       LastChildFill="False">
-                <StackPanel DockPanel.Dock="Left"
-                            Orientation="Vertical">
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0"
+                            Orientation="Vertical"
+                            HorizontalAlignment="Left">
                     <CheckBox HorizontalAlignment="Left"
                               Content="Hide translated items"
                               IsChecked="{Binding HideTranslated}" />
@@ -21,26 +26,31 @@
                               Content="Show items with error only"
                               IsChecked="{Binding ShowErrorOnly}" />
                 </StackPanel>
-                <StackPanel DockPanel.Dock="Right"
-                            Orientation="Vertical">
+                <StackPanel Grid.Column="2"
+                            Orientation="Vertical"
+                            HorizontalAlignment="Right">
                     <Button Margin="2"
-                            Content="Localize select items"
-                            Command="{Binding UpdateLocalizationCommand}"
+                            Content="Localize selection from Wowhead"
+                            Command="{Binding UpdateLocalizationWowheadCommand}"
+                            CommandParameter="{Binding SelectedItems, ElementName=ItemsDataGrid}" />
+                    <Button Margin="2"
+                            Content="Localize selection from BattleNet"
+                            Command="{Binding UpdateLocalizationBattleNetCommand}"
                             CommandParameter="{Binding SelectedItems, ElementName=ItemsDataGrid}" />
                     <Button Margin="2"
                             Content="Update database"
                             Command="{Binding UpdateDatabaseCommand}"
                             CommandParameter="{Binding SelectedItems, ElementName=ItemsDataGrid}" />
                 </StackPanel>
-            </DockPanel>
+            </Grid>
             <StackPanel DockPanel.Dock="Bottom"
                         Orientation="Horizontal">
                 <TextBlock Text="{Binding Items.SourceCollection.Count,
-                                  StringFormat='{}total : {0} items'}" />
+                                  StringFormat='{}loaded : {0} items'}" />
                 <TextBlock Text="/"
                            Margin="5,0" />
                 <TextBlock Text="{Binding Items.Count,
-                                  StringFormat='{}in view : {0} items'}" />
+                                  StringFormat='{}displayed : {0} items'}" />
                 <TextBlock Text="/"
                            Margin="5,0" />
                 <TextBlock Text="{Binding SelectedItems.Count,
